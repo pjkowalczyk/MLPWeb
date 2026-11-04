@@ -2,4 +2,110 @@
 title: "Classification"
 ---
 
-Classification
+## Logistic Regression  
+
+> - **Probabilistic Output**: Unlike the Perceptron, Logistic Regression uses the sigmoid function to map raw linear outputs to values between 0 and 1. Access predicted probabilities using predict_proba().
+> - **Regularization**: scikit-learn applies $L_2$ regularization by default (C=1.0), which penalizes large coefficient weights to prevent overfitting.
+> - **Feature Scaling**: Standardizing features with StandardScaler remains important so that regularization applies uniformly across all features and solver algorithms (like lbfgs) converge efficiently.
+
+```{python}
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# 1. Load the dataset
+data = load_breast_cancer()
+X = data.data
+y = data.target
+
+# 2. Split into training and test sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# 3. Standardize features
+# Logistic Regression applies regularization penalties (L2 by default),
+# which require features on a similar scale to work effectively.
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 4. Initialize and train the Logistic Regression model
+# Using 'lbfgs' solver and a fixed random state for reproducibility
+log_reg = LogisticRegression(max_iter=1000, random_state=42)
+log_reg.fit(X_train_scaled, y_train)
+
+# 5. Make predictions (class labels and probability estimates)
+y_pred = log_reg.predict(X_test_scaled)
+y_proba = log_reg.predict_proba(X_test_scaled)  # Returns class probabilities
+
+# 6. Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.4f}\n")
+
+print("Classification Report:")
+print(
+    classification_report(
+        y_test, y_pred, target_names=data.target_names
+    )
+)
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+```
+
+## Perceptron 
+
+> - **Feature Scaling**: The StandardScaler is applied because the Perceptron algorithm relies on dot products between feature values and weights; unscaled features with larger magnitudes can dominate training updates.
+> - **Dataset Target**: The classes in data.target_names correspond to malignant (0) and benign (1).
+> - **Convergence (max_iter & tol)**: The standard Perceptron only guarantees convergence if the dataset is linearly separable. Scaling helps, but setting max_iter ensures training terminates even if classes overlap slightly.
+
+```{python}
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import Perceptron
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn import metrics
+import matplotlib.pyplot as plt
+
+# 1. Load the dataset
+data = load_breast_cancer()
+X = data.data
+y = data.target
+
+# 2. Split into training and test sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# 3. Standardize features
+# Perceptrons are sensitive to feature scaling due to gradient-based/additive updates
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 4. Initialize and train the Perceptron model
+perceptron = Perceptron(max_iter=1000, tol=1e-3, random_state=42)
+perceptron.fit(X_train_scaled, y_train)
+
+# 5. Make predictions
+y_pred = perceptron.predict(X_test_scaled)
+
+# 6. Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.4f}\n")
+
+print("Classification Report:")
+print(
+    classification_report(
+        y_test, y_pred, target_names=data.target_names
+    )
+)
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+```
+
