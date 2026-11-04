@@ -196,7 +196,11 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link active" data-scroll-target="#logistic-regression">Logistic Regression</a></li>
+  <li><a href="#real-world-examples-of-classification" id="toc-real-world-examples-of-classification" class="nav-link active" data-scroll-target="#real-world-examples-of-classification">Real-World Examples of Classification</a></li>
+  <li><a href="#popular-classification-algorithms" id="toc-popular-classification-algorithms" class="nav-link" data-scroll-target="#popular-classification-algorithms">Popular Classification Algorithms</a></li>
+  <li><a href="#evaluate-classification-models" id="toc-evaluate-classification-models" class="nav-link" data-scroll-target="#evaluate-classification-models">Evaluate Classification Models</a></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression">Logistic Regression</a></li>
   <li><a href="#perceptron" id="toc-perceptron" class="nav-link" data-scroll-target="#perceptron">Perceptron</a></li>
   </ul>
 </nav>
@@ -223,6 +227,58 @@ window.Quarto = {
 </header>
 
 
+<p>In machine learning, <strong>classification</strong> is a core type of <strong>supervised learning</strong> where the goal is to predict the <strong>categorical label</strong> (class) of a given observation based on its input features.</p>
+<p>Unlike regression — which predicts continuous numerical values (such as predicting a house price or temperature) — classification assigns data points into discrete, predefined buckets or categories.</p>
+<hr>
+<section id="real-world-examples-of-classification" class="level3">
+<h3 class="anchored" data-anchor-id="real-world-examples-of-classification">Real-World Examples of Classification</h3>
+<ul>
+<li><strong>Binary Classification (Two Classes):</strong>
+<ul>
+<li><em>Email Spam Detection:</em> Classifying an incoming email as either <code>Spam</code> or <code>Not Spam</code>.</li>
+<li><em>Medical Diagnosis:</em> Predicting whether a tumor is <code>Malignant</code> or <code>Benign</code>.</li>
+</ul></li>
+<li><strong>Multiclass Classification (Three or More Classes):</strong>
+<ul>
+<li><em>Handwritten Digit Recognition:</em> Identifying an image of a digit as either <code>0</code>, <code>1</code>, <code>2</code>, …, up to <code>9</code>.</li>
+<li><em>Customer Intent:</em> Categorizing support tickets into <code>Technical Support</code>, <code>Billing Inquiry</code>, or <code>Product Feedback</code>.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="popular-classification-algorithms" class="level3">
+<h3 class="anchored" data-anchor-id="popular-classification-algorithms">Popular Classification Algorithms</h3>
+<p>Depending on the complexity, size, and structure of a dataset, one typically chooses from several standard algorithms:</p>
+<ol type="1">
+<li><strong>Logistic Regression:</strong> Despite its name, this is a foundational linear classification model used primarily for binary outcomes. It calculates the probability that a given observation belongs to a specific class.</li>
+<li><strong>K-Nearest Neighbors (KNN):</strong> A simple, instance-based algorithm that classifies a new data point based on the majority vote of its <span class="math inline">\(k\)</span> closest neighbors in the feature space.</li>
+<li><strong>Support Vector Machines (SVM):</strong> A powerful algorithm that finds an optimal hyperplane (decision boundary) that maximizes the margin between different classes in high-dimensional space.</li>
+<li><strong>Decision Trees &amp; Random Forests:</strong> Tree-based models that split data recursively based on feature thresholds. Random Forests combine multiple decision trees (an ensemble) to dramatically improve generalization and reduce overfitting.</li>
+<li><strong>Gradient Boosting (e.g., XGBoost, LightGBM):</strong> Advanced ensemble methods that build trees sequentially, where each new tree corrects the errors made by the previous ones. These frequently win tabular machine learning competitions.</li>
+</ol>
+<hr>
+</section>
+<section id="evaluate-classification-models" class="level3">
+<h3 class="anchored" data-anchor-id="evaluate-classification-models">Evaluate Classification Models</h3>
+<p>Because accuracy alone can be misleading (especially with imbalanced datasets, like predicting a rare fraud event that occurs 0.1% of the time), one relies on a robust set of evaluation metrics:</p>
+<ul>
+<li><strong>Confusion Matrix:</strong> A table breaking down predictions into True Positives (TP), True Negatives (TN), False Positives (FP), and False Negatives (FN).</li>
+<li><strong>Accuracy:</strong> The ratio of correct predictions to total predictions. Useful only when classes are roughly balanced.</li>
+<li><strong>Precision:</strong> Out of all positive predictions made, how many were actually correct? (<span class="math inline">\(\frac{TP}{TP + FP}\)</span>)</li>
+<li><strong>Recall (Sensitivity):</strong> Out of all actual positive instances in the data, how many did the model manage to find? (<span class="math inline">\(\frac{TP}{TP + FN}\)</span>)</li>
+<li><strong>F1-Score:</strong> The harmonic mean of Precision and Recall, providing a single balanced metric when you need to weigh both false positives and false negatives.</li>
+<li><strong>ROC-AUC (Receiver Operating Characteristic - Area Under Curve):</strong> Measures the model’s ability to discriminate between classes across various probability thresholds.</li>
+</ul>
+<hr>
+</section>
+<section id="best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="best-practices">Best Practices</h3>
+<ul>
+<li><strong>Watch Out for Class Imbalance:</strong> If 95% of the dataset belongs to one class, a naive model can achieve 95% “accuracy” by just guessing the majority class. Use techniques like <strong>SMOTE</strong> (Synthetic Minority Over-sampling Technique), class weights, or focus heavily on precision, recall, and F1-score instead.</li>
+<li><strong>Proper Data Scaling:</strong> Distance-based algorithms (like KNN and SVM) and regularized models (like Logistic Regression) require that features be properly normalized or standardized (<code>StandardScaler</code> or <code>MinMaxScaler</code>) before training.</li>
+<li><strong>Stratified Train-Test Splits:</strong> Always use stratified sampling when splitting data for classification tasks to ensure that the proportion of classes in the training and test sets remains consistent.</li>
+</ul>
+</section>
 <section id="logistic-regression" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h2>
 <blockquote class="blockquote">
@@ -232,7 +288,7 @@ window.Quarto = {
 <li><strong>Feature Scaling</strong>: Standardizing features with StandardScaler remains important so that regularization applies uniformly across all features and solver algorithms (like lbfgs) converge efficiently.</li>
 </ul>
 </blockquote>
-<div id="b3cad586" class="cell" data-execution_count="1">
+<div id="9eb07a45" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>
@@ -306,7 +362,7 @@ Confusion Matrix:
 <li><strong>Convergence (max_iter &amp; tol)</strong>: The standard Perceptron only guarantees convergence if the dataset is linearly separable. Scaling helps, but setting max_iter ensures training terminates even if classes overlap slightly.</li>
 </ul>
 </blockquote>
-<div id="92ff8072" class="cell" data-execution_count="2">
+<div id="5075c35c" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Perceptron</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>
