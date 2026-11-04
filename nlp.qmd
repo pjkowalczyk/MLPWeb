@@ -1,0 +1,41 @@
+---
+title: "Natural Language Processing"
+---
+
+### Natural Language Processing
+
+**NLP** is a subfield of artificial intelligence (AI), computer science, and linguistics focused on enabling computers to understand, interpret, and generate human language in a way that is meaningful and contextual.
+
+Think of it as the bridge between human communication (which is nuanced, ambiguous, and culturally rich) and machine computation (which relies on numbers and logic).
+
+---
+
+### Key Pillars & Core Tasks
+
+* **Text Classification:** Categorizing text into predefined labels (e.g., spam detection, sentiment analysis of product reviews).
+* **Named Entity Recognition (NER):** Extracting key entities from text, such as names, dates, organizations, or medical terms.
+* **Machine Translation:** Automatically translating text or speech from one language to another (e.g., Google Translate).
+* **Text Summarization:** Condensing long documents or articles into short, cohesive summaries.
+* **Question Answering & Conversational AI:** Building systems (like chatbots or virtual assistants) that can parse a query and retrieve or generate precise answers.
+
+---
+
+### The Evolution: From Linguistics to Transformers
+
+1. **Traditional NLP (Rule-Based & Statistical):** Early systems relied on heavy human intervention, grammar rules, regular expressions, and statistical models like **TF-IDF** and **Naive Bayes**.
+2. **Deep Learning Era:** The introduction of Recurrent Neural Networks (RNNs) and LSTMs allowed models to process sequences of words and capture short-term context.
+3. **The Transformer Revolution:** Modern NLP is dominated by **Transformer architectures** (like BERT, GPT, and T5) powered by **self-attention mechanisms**. These models process entire sentences in parallel, capturing deep, nuanced context across massive datasets.
+
+---
+
+### The NLP Workflow
+
+Workflows for NLP tasks typically follows these stages:
+
+| Stage | Description | Common Tools / Techniques |
+| --- | --- | --- |
+| **1. Data Collection & Cleaning** | Gathering text from APIs, web scraping, or databases, and removing noise (HTML tags, special characters). | Python (`BeautifulSoup`, `Regex`), Pandas |
+| **2. Text Preprocessing** | Standardizing the text for the model. | Tokenization, Lowercasing, Stop-word removal, Lemmatization |
+| **3. Vectorization / Embeddings** | Converting words or documents into numerical vectors that computers can process. | Word2Vec, GloVe, Contextual Embeddings (Hugging Face) |
+| **4. Modeling & Fine-Tuning** | Training a model or fine-tuning a pre-trained Large Language Model (LLM) for your specific task. | PyTorch, TensorFlow, Hugging Face `transformers`, Scikit-learn |
+| **5. Evaluation & Deployment** | Measuring performance using metrics like Accuracy, F1-Score, BLEU, or ROUGE, and deploying via APIs. | MLflow, FastAPI, Docker |
