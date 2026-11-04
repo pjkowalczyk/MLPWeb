@@ -27,10 +27,14 @@ A robust EDA workflow typically flows through four distinct phases:
 
 #### 1. Data Inspection & Cleaning
 
-* **Dimensions Check:** Inspect the dataset's row and column counts using `df.shape`.
-* **Data Types Audit:** Verify that numerical columns are stored as floats/integers and categorical features are mapped correctly.
-* **Missing Value Analysis:** Quantify missingness using `.isnull().sum()` and visualize missing data patterns to decide between imputation or dropping rows/columns.
-* **Duplicate Removal:** Check for and drop redundant duplicate records.
+* **Dimensions Check:**
+  * Inspect the dataset's row and column counts using `df.shape`.
+* **Data Types Audit:**
+  * Verify that numerical columns are stored as floats/integers and categorical features are mapped correctly.
+* **Missing Value Analysis:**
+  * Quantify missingness using `.isnull().sum()` and visualize missing data patterns to decide between imputation or dropping rows/columns.
+* **Duplicate Removal:**
+  * Check for and drop redundant duplicate records.
 
 #### 2. Univariate Analysis (Examining One Variable at a Time)
 

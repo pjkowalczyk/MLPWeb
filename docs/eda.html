@@ -184,10 +184,22 @@ ul.task-list li input[type="checkbox"] {
 <section id="data-inspection-cleaning" class="level4">
 <h4 class="anchored" data-anchor-id="data-inspection-cleaning">1. Data Inspection &amp; Cleaning</h4>
 <ul>
-<li><strong>Dimensions Check:</strong> Inspect the dataset’s row and column counts using <code>df.shape</code>.</li>
-<li><strong>Data Types Audit:</strong> Verify that numerical columns are stored as floats/integers and categorical features are mapped correctly.</li>
-<li><strong>Missing Value Analysis:</strong> Quantify missingness using <code>.isnull().sum()</code> and visualize missing data patterns to decide between imputation or dropping rows/columns.</li>
-<li><strong>Duplicate Removal:</strong> Check for and drop redundant duplicate records.</li>
+<li><strong>Dimensions Check:</strong>
+<ul>
+<li>Inspect the dataset’s row and column counts using <code>df.shape</code>.</li>
+</ul></li>
+<li><strong>Data Types Audit:</strong>
+<ul>
+<li>Verify that numerical columns are stored as floats/integers and categorical features are mapped correctly.</li>
+</ul></li>
+<li><strong>Missing Value Analysis:</strong>
+<ul>
+<li>Quantify missingness using <code>.isnull().sum()</code> and visualize missing data patterns to decide between imputation or dropping rows/columns.</li>
+</ul></li>
+<li><strong>Duplicate Removal:</strong>
+<ul>
+<li>Check for and drop redundant duplicate records.</li>
+</ul></li>
 </ul>
 </section>
 <section id="univariate-analysis-examining-one-variable-at-a-time" class="level4">
