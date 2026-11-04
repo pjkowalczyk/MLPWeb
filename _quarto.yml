@@ -16,6 +16,8 @@ website:
         text: Regression
       - href: nlp.qmd
         text: NLP
+      - href: deeplearning.qmd
+        text: Deep Learning
       - about.qmd
 
 

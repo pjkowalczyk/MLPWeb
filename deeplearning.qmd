@@ -1,0 +1,51 @@
+---
+title: "Deep Learning"
+---
+
+If machine learning is about teaching computers to learn from data using statistical algorithms, deep learning is about mimicking the human brain to solve complex, high-dimensional problems like computer vision, speech recognition, and generative AI.
+
+---
+
+**Deep Learning** is a specialized subset of Machine Learning (ML) based on artificial neural networks with multiple layers (hence "deep").
+
+While traditional machine learning models often require manual feature engineering (e.g., one has to tell the model what attributes of a house or an image matter), deep learning models automatically discover the representations and features needed for detection or prediction directly from raw data.
+
+---
+
+### The Anatomy of a Neural Network
+
+The building blocks of deep learning:
+
+* **Neurons (Nodes):** The basic units of computation. They take input data, multiply it by weights, add a bias, and pass the result through an **activation function** (like ReLU or Sigmoid) to introduce non-linearity.
+* **Layers:**
+  * **Input Layer:** Receives the raw data (pixels, text tokens, tabular numbers).
+  * **Hidden Layers:** The "deep" part of the network. These intermediate layers extract increasingly abstract features (e.g., in an image model, early layers might detect edges, middle layers detect shapes, and deep layers recognize faces).
+  * **Output Layer:** Produces the final prediction or classification.
+
+* **Backpropagation & Optimization:** The learning mechanism. The model calculates its error (using a loss function) and uses **gradient descent** to update the network's weights backwards, minimizing the error over time.
+
+---
+
+### Major Deep Learning Architectures
+
+Different types of data require different neural network architectures :
+
+1. **Feedforward Neural Networks (FNNs / MLPs):** The simplest architecture where data moves in one direction. Great for structured/tabular data.
+2. **Convolutional Neural Networks (CNNs):** Designed specifically for grid-like data such as images and video. They use convolutional filters to capture spatial hierarchies.
+3. **Recurrent Neural Networks (RNNs) & LSTMs:** Built for sequential data like time-series or text, though largely superseded by transformers.
+4. **Transformers:** The architecture powering modern Generative AI and Large Language Models (LLMs), relying heavily on **self-attention mechanisms** to process sequences in parallel.
+
+---
+
+### The Modern Deep Learning Workflow
+
+Building a deep learning project follows a structured engineering lifecycle:
+
+| Stage | Description | Common Frameworks / Tools |
+| --- | --- | --- |
+| **1. Data Pipeline Setup** | Handling massive datasets, normalization, augmentation, and efficient batching. | PyTorch (`DataLoader`), TensorFlow (`tf.data`), OpenCV |
+| **2. Architecture Design** | Choosing or building a neural network structure suited for your data modality. | PyTorch, TensorFlow / Keras, Hugging Face |
+| **3. Training & Monitoring** | Running training loops over multiple epochs, monitoring loss curves, and preventing overfitting. | Weights & Biases (W&B), TensorBoard, MLflow |
+| **4. Regularization & Tuning** | Applying techniques like Dropout, Batch Normalization, and hyperparameter tuning to improve generalization. | Optuna, Scikit-learn |
+| **5. Inference & Deployment** | Optimizing models for production (quantization, pruning) and serving them via APIs. | ONNX, TensorRT, FastAPI |
+
