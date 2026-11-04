@@ -58,7 +58,9 @@ for name, model in models.items():
     r2 = r2_score(y_test, y_pred)
 
     results.append({"Model": name, "RMSE": rmse, "MAE": mae, "R² Score": r2})
+```
 
+```{python}
 # Display structured performance summary
 df_results = pd.DataFrame(results).sort_values(by="RMSE").reset_index(drop=True)
 print("--- Model Performance Comparison ---")
@@ -66,9 +68,17 @@ print(df_results.to_string(index=False))
 
 # 4. Visualization Setup
 sns.set_theme(style="whitegrid")
+```
+
+```{python}
+#| label: fit
+#| fig-cap: "Actual (y_test) vs. Predicted (y_pred)"
+#| fig-width: 5
+#| fig-height: 3
+#| out-width: "100%"
 
 # Figure 1: Actual (y_test) vs. Predicted (y_pred)
-fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+fig, axes = plt.subplots(2, 2, figsize=(8, 8))
 axes = axes.flatten()
 
 for idx, (name, y_pred) in enumerate(predictions.items()):
@@ -101,9 +111,17 @@ plt.suptitle(
 )
 plt.tight_layout()
 plt.show()
+```
+
+```{python}
+#| label: residual
+#| fig-cap: "Residual Plots (Residuals vs. Predicted Values)"
+#| fig-width: 5
+#| fig-height: 3
+#| out-width: "100%"
 
 # Figure 2: Residual Plots (Residuals vs. Predicted Values)
-fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+fig, axes = plt.subplots(2, 2, figsize=(8, 8))
 axes = axes.flatten()
 
 for idx, (name, y_pred) in enumerate(predictions.items()):
