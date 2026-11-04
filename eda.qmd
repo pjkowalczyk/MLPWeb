@@ -2,8 +2,6 @@
 title: "EDA"
 ---
 
-Exploratory Data Analysis
-
 ### What is Exploratory Data Analysis (EDA)?
 
 **Exploratory Data Analysis (EDA)** is the critical bridge between raw data collection and advanced machine learning modeling. Before training algorithms, building complex pipelines, or deploying neural networks, one must first understand the structural landscape of the data.
