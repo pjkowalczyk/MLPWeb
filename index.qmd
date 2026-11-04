@@ -6,9 +6,3 @@ date: today
 
 **Praxis**: the synthesis of scholarly knowledge and practical experience
 
-```{mermaid}
-graph LR
-    A["Data Preparation<br><sub>(Cleaning, Imputation, Scaling)</sub>"] --> B["Data Curation<br><sub>(Filtering, Feature Engineering)</sub>"]
-    B --> C["Model Building<br><sub>(Algorithm, Training, Tuning)</sub>"]
-    C --> D["Model Evaluation<br><sub>(Validation, Metrics, Testing)</sub>"]
-```
