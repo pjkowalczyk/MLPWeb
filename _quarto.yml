@@ -8,9 +8,12 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
       - href: eda.qmd
         text: EDA
+      - href: classification.qmd
+        text: Classification
+      - about.qmd
+
 
 format:
   html:
