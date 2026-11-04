@@ -110,6 +110,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -167,7 +196,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#multiple-regressors" id="toc-multiple-regressors" class="nav-link active" data-scroll-target="#multiple-regressors">Multiple Regressors</a></li>
+  <li><a href="#real-world-examples-of-regression" id="toc-real-world-examples-of-regression" class="nav-link active" data-scroll-target="#real-world-examples-of-regression">Real-World Examples of Regression</a></li>
+  <li><a href="#popular-regression-algorithms" id="toc-popular-regression-algorithms" class="nav-link" data-scroll-target="#popular-regression-algorithms">Popular Regression Algorithms</a></li>
+  <li><a href="#evaluate-regression-models" id="toc-evaluate-regression-models" class="nav-link" data-scroll-target="#evaluate-regression-models">Evaluate Regression Models</a></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
+  <li><a href="#multiple-regressors" id="toc-multiple-regressors" class="nav-link" data-scroll-target="#multiple-regressors">Multiple Regressors</a></li>
   </ul>
 </nav>
     </div>
@@ -193,9 +226,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>In machine learning, <strong>regression</strong> is a fundamental type of <strong>supervised learning</strong> where the goal is to predict a <strong>continuous numerical value</strong> based on a set of input features.</p>
+<p>Unlike classification — which assigns data points into discrete categories (such as spam vs.&nbsp;not spam)—regression deals with quantities, amounts, or continuous scales.</p>
+<hr>
+<section id="real-world-examples-of-regression" class="level3">
+<h3 class="anchored" data-anchor-id="real-world-examples-of-regression">Real-World Examples of Regression</h3>
+<ul>
+<li><strong>Real Estate:</strong> Predicting the exact selling price of a house based on square footage, location, number of bedrooms, and year built.</li>
+<li><strong>Finance:</strong> Forecasting next quarter’s stock price, company revenue, or customer lifetime value (LTV).</li>
+<li><strong>Economics &amp; Weather:</strong> Estimating the exact temperature tomorrow, daily energy consumption, or retail store foot traffic.</li>
+</ul>
+<hr>
+</section>
+<section id="popular-regression-algorithms" class="level3">
+<h3 class="anchored" data-anchor-id="popular-regression-algorithms">Popular Regression Algorithms</h3>
+<p>Depending on the relationship between your features and the target variable, data scientists select from various regression models:</p>
+<ol type="1">
+<li><strong>Linear Regression:</strong> The foundational baseline model. It fits a straight line (or hyperplane in higher dimensions) that minimizes the overall distance between the predicted values and the actual data points.</li>
+<li><strong>Ridge and Lasso Regression (Regularization):</strong> Extensions of linear regression that add penalty terms to the loss function to prevent overfitting, handle multi-collinearity, and perform feature selection (Lasso can shrink irrelevant coefficients down to absolute zero).</li>
+<li><strong>Decision Trees &amp; Random Forests:</strong> Non-linear tree-based models that split the feature space into distinct regions and predict the average target value within each region.</li>
+<li><strong>Gradient Boosting (e.g., XGBoost, LightGBM, CatBoost):</strong> Powerful ensemble methods that build trees sequentially to minimize residual errors. These are industry favorites for winning tabular regression competitions.</li>
+</ol>
+<hr>
+</section>
+<section id="evaluate-regression-models" class="level3">
+<h3 class="anchored" data-anchor-id="evaluate-regression-models">Evaluate Regression Models</h3>
+<p>Because regression outputs continuous numbers rather than right/wrong labels, one relies on error-based metrics to measure how far predictions are from reality:</p>
+<ul>
+<li><strong>Mean Absolute Error (MAE):</strong> The average absolute distance between predicted and actual values (<span class="math inline">\(\frac{1}{n} \sum \vert{}y_i - \hat{y}_i\vert{}\)</span>). It is intuitive and less sensitive to massive outliers.</li>
+<li><strong>Mean Squared Error (MSE):</strong> The average squared difference between predictions and actuals. Squaring penalizes larger errors more heavily, making it great for spotting severe model mistakes.</li>
+<li><strong>Root Mean Squared Error (RMSE):</strong> The square root of MSE. It brings the error metric back into the exact same units as your target variable (e.g., dollars for house prices), making interpretation straightforward.</li>
+<li><strong>R-Squared (<span class="math inline">\(R^2\)</span> / Coefficient of Determination):</strong> Represents the proportion of variance in the dependent variable that is predictable from the independent features. An <span class="math inline">\(R^2\)</span> of <span class="math inline">\(1.0\)</span> indicates a perfect fit, while <span class="math inline">\(0.0\)</span> means the model performs no better than simply guessing the mean.</li>
+</ul>
+<hr>
+</section>
+<section id="best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="best-practices">Best Practices</h3>
+<ul>
+<li><strong>Check for Outliers:</strong> Regression models (especially those using MSE/RMSE) are highly sensitive to extreme outliers. A few bad data points can drastically skew the regression line. Always inspect distributions using boxplots or scatterplots.</li>
+<li><strong>Scale Features:</strong> If one is using regularized models (Ridge/Lasso), distance-based metrics, or neural networks, always normalize or standardize the numerical features (<code>StandardScaler</code> or <code>MinMaxScaler</code>) so that features with larger numerical ranges don’t unfairly dominate the model.</li>
+<li><strong>Multicollinearity:</strong> If the input features are heavily correlated with each other, standard linear regression coefficients can become unstable and erratic. Use correlation heatmaps and Variance Inflation Factor (VIF) checks to clean the feature set.</li>
+</ul>
+</section>
 <section id="multiple-regressors" class="level2">
 <h2 class="anchored" data-anchor-id="multiple-regressors">Multiple Regressors</h2>
-<div id="9a549915" class="cell" data-execution_count="1">
+<div id="eb59adf0" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -250,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    results.append({<span class="st">"Model"</span>: name, <span class="st">"RMSE"</span>: rmse, <span class="st">"MAE"</span>: mae, <span class="st">"R² Score"</span>: r2})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="da1b1f1e" class="cell" data-execution_count="2">
+<div id="7520fcdc" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display structured performance summary</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df_results <span class="op">=</span> pd.DataFrame(results).sort_values(by<span class="op">=</span><span class="st">"RMSE"</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Model Performance Comparison ---"</span>)</span>

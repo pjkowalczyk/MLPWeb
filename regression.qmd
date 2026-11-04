@@ -2,6 +2,48 @@
 title: "Regression"
 ---
 
+In machine learning, **regression** is a fundamental type of **supervised learning** where the goal is to predict a **continuous numerical value** based on a set of input features.
+
+Unlike classification — which assigns data points into discrete categories (such as spam vs. not spam)—regression deals with quantities, amounts, or continuous scales.
+
+---
+
+### Real-World Examples of Regression
+
+* **Real Estate:** Predicting the exact selling price of a house based on square footage, location, number of bedrooms, and year built.
+* **Finance:** Forecasting next quarter's stock price, company revenue, or customer lifetime value (LTV).
+* **Economics & Weather:** Estimating the exact temperature tomorrow, daily energy consumption, or retail store foot traffic.
+
+---
+
+### Popular Regression Algorithms
+
+Depending on the relationship between your features and the target variable, data scientists select from various regression models:
+
+1. **Linear Regression:** The foundational baseline model. It fits a straight line (or hyperplane in higher dimensions) that minimizes the overall distance between the predicted values and the actual data points.
+2. **Ridge and Lasso Regression (Regularization):** Extensions of linear regression that add penalty terms to the loss function to prevent overfitting, handle multi-collinearity, and perform feature selection (Lasso can shrink irrelevant coefficients down to absolute zero).
+3. **Decision Trees & Random Forests:** Non-linear tree-based models that split the feature space into distinct regions and predict the average target value within each region.
+4. **Gradient Boosting (e.g., XGBoost, LightGBM, CatBoost):** Powerful ensemble methods that build trees sequentially to minimize residual errors. These are industry favorites for winning tabular regression competitions.
+
+---
+
+### Evaluate Regression Models
+
+Because regression outputs continuous numbers rather than right/wrong labels, one relies on error-based metrics to measure how far predictions are from reality:
+
+* **Mean Absolute Error (MAE):** The average absolute distance between predicted and actual values ($\frac{1}{n} \sum \vert{}y_i - \hat{y}_i\vert{}$). It is intuitive and less sensitive to massive outliers.
+* **Mean Squared Error (MSE):** The average squared difference between predictions and actuals. Squaring penalizes larger errors more heavily, making it great for spotting severe model mistakes.
+* **Root Mean Squared Error (RMSE):** The square root of MSE. It brings the error metric back into the exact same units as your target variable (e.g., dollars for house prices), making interpretation straightforward.
+* **R-Squared ($R^2$ / Coefficient of Determination):** Represents the proportion of variance in the dependent variable that is predictable from the independent features. An $R^2$ of $1.0$ indicates a perfect fit, while $0.0$ means the model performs no better than simply guessing the mean.
+
+---
+
+### Best Practices
+
+* **Check for Outliers:** Regression models (especially those using MSE/RMSE) are highly sensitive to extreme outliers. A few bad data points can drastically skew the regression line. Always inspect distributions using boxplots or scatterplots.
+* **Scale Features:** If one is using regularized models (Ridge/Lasso), distance-based metrics, or neural networks, always normalize or standardize the numerical features (`StandardScaler` or `MinMaxScaler`) so that features with larger numerical ranges don't unfairly dominate the model.
+* **Multicollinearity:** If the input features are heavily correlated with each other, standard linear regression coefficients can become unstable and erratic. Use correlation heatmaps and Variance Inflation Factor (VIF) checks to clean the feature set.
+
 ## Multiple Regressors
 
 ```{python}
