@@ -3,3 +3,66 @@ title: "EDA"
 ---
 
 Exploratory Data Analysis
+
+### What is Exploratory Data Analysis (EDA)?
+
+**Exploratory Data Analysis (EDA)** is the critical bridge between raw data collection and advanced machine learning modeling. Before training algorithms, building complex pipelines, or deploying neural networks, one must first understand the structural landscape of the data.
+
+Think of EDA as an investigative process. Instead of jumping straight into assumptions or predictive models, one acts like a detective — using visualization, statistical summary metrics, and data transformation tools to interrogate the dataset, uncover hidden anomalies, check assumptions, and surface core patterns.
+
+---
+
+### The Core Objectives of EDA
+
+1. **Understand Data Structure & Integrity:** Know the data shapes, column types, missing values, and duplicate rows.
+2. **Uncover Distribution Patterns:** Identify whether features are normally distributed, heavily skewed, or prone to extreme outliers.
+3. **Detect Relationships & Correlations:** Spot multi-collinearity or linear/non-linear relationships between predictors and target variables.
+4. **Guide Feature Engineering:** Inform decisions on scaling, normalization, imputation strategies, and categorical encoding.
+
+---
+
+### Step-by-Step EDA Workflow
+
+A robust EDA workflow typically flows through four distinct phases:
+
+#### 1. Data Inspection & Cleaning
+
+* **Dimensions Check:** Inspect the dataset's row and column counts using `df.shape`.
+* **Data Types Audit:** Verify that numerical columns are stored as floats/integers and categorical features are mapped correctly.
+* **Missing Value Analysis:** Quantify missingness using `.isnull().sum()` and visualize missing data patterns to decide between imputation or dropping rows/columns.
+* **Duplicate Removal:** Check for and drop redundant duplicate records.
+
+#### 2. Univariate Analysis (Examining One Variable at a Time)
+
+* **Numerical Features:**
+  * Calculate central tendencies (mean, median) and dispersion (standard deviation, interquartile range).  
+  * Visualize distributions using **histograms**, **kernel density estimation (KDE) plots**, or **boxplots** to spot skewed data distributions and outliers.  
+
+* **Categorical Features:**
+  * Calculate frequency counts and proportions using `.value_counts()`.
+  * Visualize cardinalities and class imbalances using **countplots** or **bar charts**.
+
+#### 3. Bivariate & Multivariate Analysis (Exploring Relationships)
+
+* **Numerical vs. Numerical:**
+  * Use **scatterplots** or pairplots (`sns.pairplot`) to inspect joint distributions and correlations.
+  * Compute a **correlation matrix** (Pearson or Spearman) and visualize it via a **heatmap** to detect multi-collinearity.
+
+* **Categorical vs. Numerical:**
+  * Compare distributions across groups using **boxplots**, **violin plots**, or faceted histograms (`sns.FacetGrid`).
+
+* **Categorical vs. Categorical:**
+  * Utilize **grouped bar charts** or contingency tables (cross-tabs) to evaluate associations.
+
+#### 4. Hypothesis Generation & Insight Synthesis
+
+* Document initial findings, surprising correlations, and data anomalies.
+* Formulate concrete hypotheses to test during feature engineering and model building (e.g., *"Customer churn spikes significantly when tenure is under 6 months combined with high support ticket frequency"*).
+
+---
+
+### Best Practices
+
+* **Never Skip Visualizations:** Summary statistics can lie (consider Anscombe’s Quartet, where datasets with identical means and correlations look completely different when plotted). Always back up numbers with plots.
+* **Beware of Data Leakage:** Perform EDA primarily on the training set. Keep the test set locked away to prevent inadvertent bias from bleeding into exploratory insights.
+* **Document:** Keep a clean, well-commented notebook where every visual output is accompanied by a brief interpretive takeaway sentence.

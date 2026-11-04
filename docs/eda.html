@@ -127,8 +127,17 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-is-exploratory-data-analysis-eda" id="toc-what-is-exploratory-data-analysis-eda" class="nav-link active" data-scroll-target="#what-is-exploratory-data-analysis-eda">What is Exploratory Data Analysis (EDA)?</a></li>
+  <li><a href="#the-core-objectives-of-eda" id="toc-the-core-objectives-of-eda" class="nav-link" data-scroll-target="#the-core-objectives-of-eda">The Core Objectives of EDA</a></li>
+  <li><a href="#step-by-step-eda-workflow" id="toc-step-by-step-eda-workflow" class="nav-link" data-scroll-target="#step-by-step-eda-workflow">Step-by-Step EDA Workflow</a></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content" tabindex="-1">
@@ -153,8 +162,87 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Exploratory Data Analysis</p>
+<section id="what-is-exploratory-data-analysis-eda" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-exploratory-data-analysis-eda">What is Exploratory Data Analysis (EDA)?</h3>
+<p><strong>Exploratory Data Analysis (EDA)</strong> is the critical bridge between raw data collection and advanced machine learning modeling. Before training algorithms, building complex pipelines, or deploying neural networks, one must first understand the structural landscape of the data.</p>
+<p>Think of EDA as an investigative process. Instead of jumping straight into assumptions or predictive models, one acts like a detective — using visualization, statistical summary metrics, and data transformation tools to interrogate the dataset, uncover hidden anomalies, check assumptions, and surface core patterns.</p>
+<hr>
+</section>
+<section id="the-core-objectives-of-eda" class="level3">
+<h3 class="anchored" data-anchor-id="the-core-objectives-of-eda">The Core Objectives of EDA</h3>
+<ol type="1">
+<li><strong>Understand Data Structure &amp; Integrity:</strong> Know the data shapes, column types, missing values, and duplicate rows.</li>
+<li><strong>Uncover Distribution Patterns:</strong> Identify whether features are normally distributed, heavily skewed, or prone to extreme outliers.</li>
+<li><strong>Detect Relationships &amp; Correlations:</strong> Spot multi-collinearity or linear/non-linear relationships between predictors and target variables.</li>
+<li><strong>Guide Feature Engineering:</strong> Inform decisions on scaling, normalization, imputation strategies, and categorical encoding.</li>
+</ol>
+<hr>
+</section>
+<section id="step-by-step-eda-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="step-by-step-eda-workflow">Step-by-Step EDA Workflow</h3>
+<p>A robust EDA workflow typically flows through four distinct phases:</p>
+<section id="data-inspection-cleaning" class="level4">
+<h4 class="anchored" data-anchor-id="data-inspection-cleaning">1. Data Inspection &amp; Cleaning</h4>
+<ul>
+<li><strong>Dimensions Check:</strong> Inspect the dataset’s row and column counts using <code>df.shape</code>.</li>
+<li><strong>Data Types Audit:</strong> Verify that numerical columns are stored as floats/integers and categorical features are mapped correctly.</li>
+<li><strong>Missing Value Analysis:</strong> Quantify missingness using <code>.isnull().sum()</code> and visualize missing data patterns to decide between imputation or dropping rows/columns.</li>
+<li><strong>Duplicate Removal:</strong> Check for and drop redundant duplicate records.</li>
+</ul>
+</section>
+<section id="univariate-analysis-examining-one-variable-at-a-time" class="level4">
+<h4 class="anchored" data-anchor-id="univariate-analysis-examining-one-variable-at-a-time">2. Univariate Analysis (Examining One Variable at a Time)</h4>
+<ul>
+<li><strong>Numerical Features:</strong>
+<ul>
+<li>Calculate central tendencies (mean, median) and dispersion (standard deviation, interquartile range).<br>
+</li>
+<li>Visualize distributions using <strong>histograms</strong>, <strong>kernel density estimation (KDE) plots</strong>, or <strong>boxplots</strong> to spot skewed data distributions and outliers.</li>
+</ul></li>
+<li><strong>Categorical Features:</strong>
+<ul>
+<li>Calculate frequency counts and proportions using <code>.value_counts()</code>.</li>
+<li>Visualize cardinalities and class imbalances using <strong>countplots</strong> or <strong>bar charts</strong>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="bivariate-multivariate-analysis-exploring-relationships" class="level4">
+<h4 class="anchored" data-anchor-id="bivariate-multivariate-analysis-exploring-relationships">3. Bivariate &amp; Multivariate Analysis (Exploring Relationships)</h4>
+<ul>
+<li><strong>Numerical vs.&nbsp;Numerical:</strong>
+<ul>
+<li>Use <strong>scatterplots</strong> or pairplots (<code>sns.pairplot</code>) to inspect joint distributions and correlations.</li>
+<li>Compute a <strong>correlation matrix</strong> (Pearson or Spearman) and visualize it via a <strong>heatmap</strong> to detect multi-collinearity.</li>
+</ul></li>
+<li><strong>Categorical vs.&nbsp;Numerical:</strong>
+<ul>
+<li>Compare distributions across groups using <strong>boxplots</strong>, <strong>violin plots</strong>, or faceted histograms (<code>sns.FacetGrid</code>).</li>
+</ul></li>
+<li><strong>Categorical vs.&nbsp;Categorical:</strong>
+<ul>
+<li>Utilize <strong>grouped bar charts</strong> or contingency tables (cross-tabs) to evaluate associations.</li>
+</ul></li>
+</ul>
+</section>
+<section id="hypothesis-generation-insight-synthesis" class="level4">
+<h4 class="anchored" data-anchor-id="hypothesis-generation-insight-synthesis">4. Hypothesis Generation &amp; Insight Synthesis</h4>
+<ul>
+<li>Document initial findings, surprising correlations, and data anomalies.</li>
+<li>Formulate concrete hypotheses to test during feature engineering and model building (e.g., <em>“Customer churn spikes significantly when tenure is under 6 months combined with high support ticket frequency”</em>).</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="best-practices">Best Practices</h3>
+<ul>
+<li><strong>Never Skip Visualizations:</strong> Summary statistics can lie (consider Anscombe’s Quartet, where datasets with identical means and correlations look completely different when plotted). Always back up numbers with plots.</li>
+<li><strong>Beware of Data Leakage:</strong> Perform EDA primarily on the training set. Keep the test set locked away to prevent inadvertent bias from bleeding into exploratory insights.</li>
+<li><strong>Document:</strong> Keep a clean, well-commented notebook where every visual output is accompanied by a brief interpretive takeaway sentence.</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
