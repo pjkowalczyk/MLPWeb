@@ -1,6 +1,7 @@
 ---
 title: "Machine Learning Praxis"
 author: "Paul J. Kowalczyk, PhD"
+date: today
 ---
 
 This is a Quarto website.
