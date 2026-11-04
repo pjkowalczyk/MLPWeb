@@ -1,5 +1,6 @@
 ---
 title: "Machine Learning Praxis"
+author: "Paul J. Kowalczyk, PhD"
 ---
 
 This is a Quarto website.
