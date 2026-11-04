@@ -10,5 +10,8 @@
   },
   "classification.qmd": {
     "classification.html": "fa248433"
+  },
+  "regression.qmd": {
+    "regression.html": "15ba3bd9"
   }
 }

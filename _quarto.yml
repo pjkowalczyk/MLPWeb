@@ -12,6 +12,8 @@ website:
         text: EDA
       - href: classification.qmd
         text: Classification
+      - href: regression.qmd
+        text: Regression
       - about.qmd
 
 
