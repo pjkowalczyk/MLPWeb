@@ -250,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-2-writing-first-python-script" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-writing-first-python-script">Step 2: Writing First Python Script</h4>
 <p>Create a Python script named <code>test_ollama.py</code> or open a Jupyter notebook cell. Use the following code to send a single prompt to your local <code>llama3</code> instance:</p>
-<div id="6422cc21" class="cell" data-execution_count="1">
+<div id="4ea77c43" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Send a chat request to the locally running model</span></span>
@@ -272,14 +272,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response[<span class="st">"message"</span>][<span class="st">"content"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model Response:
-Overfitting occurs when a machine learning model is too complex and becomes overly specialized to the training data, resulting in poor performance on new, unseen data because it has learned the noise and irregularities in the training data rather than the underlying patterns. This is often caused by a model having too many parameters relative to the size of the training dataset, leading it to memorize the training data rather than generalizing to new examples.</code></pre>
+Overfitting occurs when a machine learning model is too complex and perfectly fits the training data, but performs poorly on new, unseen data because it has learned the noise and randomness in the training data rather than the underlying patterns. As a result, the model becomes overly specialized to the training data and is unable to generalize well to new situations, leading to poor performance on validation or test sets.</code></pre>
 </div>
 </div>
 </section>
 <section id="step-3-experimenting-with-system-prompts" class="level4">
 <h4 class="anchored" data-anchor-id="step-3-experimenting-with-system-prompts">Step 3: Experimenting with System Prompts</h4>
 <p>Guide the model’s persona or output style by prepending a <code>"system"</code> message before the <code>"user"</code> message:</p>
-<div id="8cc2850a" class="cell" data-execution_count="2">
+<div id="b845e61a" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.chat(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"llama3"</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
@@ -296,7 +296,7 @@ Overfitting occurs when a machine learning model is too complex and becomes over
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response[<span class="st">"message"</span>][<span class="st">"content"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validation is a statistical technique used to evaluate the performance of a machine learning model by dividing the available data into subsets and training the model on a subset while testing its performance on the remaining subsets. This process is repeated multiple times, with each subset serving as the test set once, to obtain an estimate of the model's average performance.</code></pre>
+<pre><code>Cross-validation is a technique used to evaluate the performance of a machine learning model by dividing the available data into subsets, training the model on most of the subsets, and then testing its performance on the remaining subset. This process is repeated multiple times, with each subset serving as the test set once.</code></pre>
 </div>
 </div>
 <hr>
@@ -307,7 +307,7 @@ Overfitting occurs when a machine learning model is too complex and becomes over
 <section id="step-1-import-dependencies-and-setup-data" class="level4">
 <h4 class="anchored" data-anchor-id="step-1-import-dependencies-and-setup-data">Step 1: Import Dependencies and Setup Data</h4>
 <p>Assume one is working with a small dataset of customer support reviews that one wants to categorize by sentiment.</p>
-<div id="3b659cc8" class="cell" data-execution_count="3">
+<div id="3765bf14" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -345,7 +345,7 @@ Overfitting occurs when a machine learning model is too complex and becomes over
 <section id="step-2-define-a-classification-function" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-define-a-classification-function">Step 2: Define a Classification Function</h4>
 <p>Write a Python function that formats each text row into a prompt, queries Ollama, and strips whitespace from the output:</p>
-<div id="1d0bd304" class="cell" data-execution_count="4">
+<div id="a53b8c5b" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_sentiment(text):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  prompt <span class="op">=</span> <span class="ss">f"""</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    Classify the sentiment of the following review strictly as Positive, Negative, or Neutral.</span></span>
@@ -362,7 +362,7 @@ Overfitting occurs when a machine learning model is too complex and becomes over
 <section id="step-3-apply-the-function-to-the-dataframe" class="level4">
 <h4 class="anchored" data-anchor-id="step-3-apply-the-function-to-the-dataframe">Step 3: Apply the Function to the DataFrame</h4>
 <p>Apply the custom function across the <code>review</code> column to enrich the dataset:</p>
-<div id="644b9e24" class="cell" data-execution_count="5">
+<div id="add72621" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the classification function (Note: execution time depends on local hardware)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"sentiment"</span>] <span class="op">=</span> df[<span class="st">"review"</span>].<span class="bu">apply</span>(classify_sentiment)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -372,8 +372,8 @@ Overfitting occurs when a machine learning model is too complex and becomes over
 <pre><code>
 Enriched DataFrame:
    review_id                                          sentiment  \
-0        101                                           Negative   
-1        102       The sentiment of this review is:\n\nPositive   
+0        101                                Sentiment: Negative   
+1        102                                           Positive   
 2        103  I would classify the sentiment of this review ...   
 
                                               review  
