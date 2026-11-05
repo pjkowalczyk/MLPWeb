@@ -19,5 +19,8 @@
   },
   "deeplearning.qmd": {
     "deeplearning.html": "4dcc0b6a"
+  },
+  "llm.qmd": {
+    "llm.html": "e2268662"
   }
 }

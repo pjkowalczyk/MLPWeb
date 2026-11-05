@@ -1,0 +1,166 @@
+---
+title: "Large Language Models"
+---
+
+## Ollama
+
+**Ollama** is an open-source tool designed to let one download, run, and manage powerful open-source LLMs (such as Meta's *Llama 3*, *Mistral*, and Google's *Gemma*) locally on one's own machine (using the machine's CPU or GPU).
+
+------------------------------------------------------------------------
+
+### Getting Started with Local LLMs Using Ollama
+
+#### Step 1: Installation & Verification
+
+1.  Navigate to the official [Ollama website](https://ollama.com) and download the installer for your operating system (macOS, Windows, or Linux).
+2.  Open your terminal (or Command Prompt / PowerShell on Windows) and verify that the installation was successful by checking the version:
+
+`ollama --version`
+
+#### Step 2: Download and Run a Model
+
+To run an LLM locally, one needs to download its weights using the `pull` command; we will use Meta's `llama`
+
+`ollama pull llama3`
+
+Once the download is complete, launch an interactive chat session directly in your terminal:
+
+`ollama run llama3`
+
+- **Try asking a data science question:** \> *"Explain the difference between L1 and L2 regularization in simple terms."*
+
+- **To exit the session:** Type `/bye` or press `Ctrl + D`.
+
+#### Managing Local Models
+
+Check which models are currently stored on the local disk at any time by running:
+
+`ollama list`
+
+To free up disk space, remove a model using:
+
+`ollama rm llama3`
+
+------------------------------------------------------------------------
+
+### Integrating Ollama into Python Data Pipelines
+
+#### Step 1: Install the Python Library
+
+Make sure the active virtual environment or notebook kernel has the official Ollama package installed:
+
+`pip install ollama`
+
+#### Step 2: Writing First Python Script
+
+Create a Python script named `test_ollama.py` or open a Jupyter notebook cell. Use the following code to send a single prompt to your local `llama3` instance:
+
+```{python}
+import ollama
+
+# Send a chat request to the locally running model
+response = ollama.chat(
+    model="llama3",
+    messages=[
+        {
+            "role": "user",
+            "content": (
+                "Explain the concept of overfitting in machine learning in"
+                " exactly two sentences."
+            ),
+        },
+    ],
+)
+
+# Extract and print the model's reply
+print("Model Response:")
+print(response["message"]["content"])
+```
+
+#### Step 3: Experimenting with System Prompts
+
+Guide the model's persona or output style by prepending a `"system"` message before the `"user"` message:
+
+```{python}
+response = ollama.chat(
+    model="llama3",
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                "You are a rigorous data science professor. Keep your answers"
+                " concise and academic."
+            ),
+        },
+        {"role": "user", "content": "What is cross-validation?"},
+    ],
+)
+
+print(response["message"]["content"])
+```
+
+------------------------------------------------------------------------
+
+### Practical Data Science Use Case — Zero-Shot Text Classification with Pandas
+
+#### Step 1: Import Dependencies and Setup Data
+
+Assume one is working with a small dataset of customer support reviews that one wants to categorize by sentiment.
+
+```{python}
+import ollama
+import pandas as pd
+
+# Sample raw dataset
+data = {
+    "review_id": [101, 102, 103],
+    "review": [
+        (
+            "The software kept crashing every time I clicked export. Very"
+            " frustrating."
+        ),
+        (
+            "Customer support was incredibly helpful and resolved my issue"
+            " fast!"
+        ),
+        (
+            "The interface is okay, but it lacks basic filtering features for"
+            " large tables."
+        ),
+    ],
+}
+
+df = pd.DataFrame(data)
+print("Original DataFrame:")
+print(df)
+```
+
+#### Step 2: Define a Classification Function
+
+Write a Python function that formats each text row into a prompt, queries Ollama, and strips whitespace from the output:
+
+```{python}
+def classify_sentiment(text):
+  prompt = f"""
+    Classify the sentiment of the following review strictly as Positive, Negative, or Neutral.
+    Review: "{text}"
+    Sentiment:
+    """
+
+  response = ollama.chat(
+      model="llama3", messages=[{"role": "user", "content": prompt}]
+  )
+  return response["message"]["content"].strip()
+```
+
+#### Step 3: Apply the Function to the DataFrame
+
+Apply the custom function across the `review` column to enrich the dataset:
+
+```{python}
+# Apply the classification function (Note: execution time depends on local hardware)
+df["sentiment"] = df["review"].apply(classify_sentiment)
+
+print("\nEnriched DataFrame:")
+print(df[["review_id", "sentiment", "review"]])
+```
