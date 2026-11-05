@@ -176,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#natural-language-processing" id="toc-natural-language-processing" class="nav-link active" data-scroll-target="#natural-language-processing">Natural Language Processing</a></li>
-  <li><a href="#key-pillars-core-tasks" id="toc-key-pillars-core-tasks" class="nav-link" data-scroll-target="#key-pillars-core-tasks">Key Pillars &amp; Core Tasks</a></li>
+  <li><a href="#core-tasks" id="toc-core-tasks" class="nav-link" data-scroll-target="#core-tasks">Core Tasks</a></li>
   <li><a href="#the-evolution-from-linguistics-to-transformers" id="toc-the-evolution-from-linguistics-to-transformers" class="nav-link" data-scroll-target="#the-evolution-from-linguistics-to-transformers">The Evolution: From Linguistics to Transformers</a></li>
   <li><a href="#the-nlp-workflow" id="toc-the-nlp-workflow" class="nav-link" data-scroll-target="#the-nlp-workflow">The NLP Workflow</a></li>
   <li><a href="#example-tasks" id="toc-example-tasks" class="nav-link" data-scroll-target="#example-tasks">Example Tasks</a>
@@ -215,8 +215,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Think of it as the bridge between human communication (which is nuanced, ambiguous, and culturally rich) and machine computation (which relies on numbers and logic).</p>
 <hr>
 </section>
-<section id="key-pillars-core-tasks" class="level2">
-<h2 class="anchored" data-anchor-id="key-pillars-core-tasks">Key Pillars &amp; Core Tasks</h2>
+<section id="core-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="core-tasks">Core Tasks</h2>
 <ul>
 <li><strong>Text Classification:</strong> Categorizing text into predefined labels (e.g., spam detection, sentiment analysis of product reviews).</li>
 <li><strong>Named Entity Recognition (NER):</strong> Extracting key entities from text, such as names, dates, organizations, or medical terms.</li>
@@ -298,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 <section id="end-to-end-pipeline" class="level5">
 <h5 class="anchored" data-anchor-id="end-to-end-pipeline">End-to-End Pipeline</h5>
-<div id="e42af249" class="cell" data-execution_count="1">
+<div id="29a26fc8" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>
@@ -415,7 +415,7 @@ Review: 'Horrible experience, never coming back.' --&gt; Predicted: Negative</co
 <h5 class="anchored" data-anchor-id="ner-with-spacy">NER with spaCy</h5>
 <p>In modern data science, one rarely trains an NER model from scratch unless one has specialized domain corpora (like medical records or legal contracts). Instead, one uses robust pre-trained libraries like <strong>spaCy</strong> or <strong>Hugging Face Transformers</strong>.</p>
 <p>A clean, reproducible script using <code>spaCy</code> to perform off-the-shelf Named Entity Recognition:</p>
-<div id="58392e7a" class="cell" data-execution_count="2">
+<div id="52facea0" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load the pre-trained English language model</span></span>

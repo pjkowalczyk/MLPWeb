@@ -28,11 +28,11 @@
     "text": "NLP is a subfield of artificial intelligence (AI), computer science, and linguistics focused on enabling computers to understand, interpret, and generate human language in a way that is meaningful and contextual.\nThink of it as the bridge between human communication (which is nuanced, ambiguous, and culturally rich) and machine computation (which relies on numbers and logic)."
   },
   {
-    "objectID": "nlp.html#key-pillars-core-tasks",
-    "href": "nlp.html#key-pillars-core-tasks",
+    "objectID": "nlp.html#core-tasks",
+    "href": "nlp.html#core-tasks",
     "title": "Natural Language Processing",
-    "section": "Key Pillars & Core Tasks",
-    "text": "Key Pillars & Core Tasks\n\nText Classification: Categorizing text into predefined labels (e.g., spam detection, sentiment analysis of product reviews).\nNamed Entity Recognition (NER): Extracting key entities from text, such as names, dates, organizations, or medical terms.\nMachine Translation: Automatically translating text or speech from one language to another (e.g., Google Translate).\nText Summarization: Condensing long documents or articles into short, cohesive summaries.\nQuestion Answering & Conversational AI: Building systems (like chatbots or virtual assistants) that can parse a query and retrieve or generate precise answers."
+    "section": "Core Tasks",
+    "text": "Core Tasks\n\nText Classification: Categorizing text into predefined labels (e.g., spam detection, sentiment analysis of product reviews).\nNamed Entity Recognition (NER): Extracting key entities from text, such as names, dates, organizations, or medical terms.\nMachine Translation: Automatically translating text or speech from one language to another (e.g., Google Translate).\nText Summarization: Condensing long documents or articles into short, cohesive summaries.\nQuestion Answering & Conversational AI: Building systems (like chatbots or virtual assistants) that can parse a query and retrieve or generate precise answers."
   },
   {
     "objectID": "nlp.html#the-evolution-from-linguistics-to-transformers",

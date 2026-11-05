@@ -10,7 +10,7 @@ Think of it as the bridge between human communication (which is nuanced, ambiguo
 
 ---
 
-## Key Pillars & Core Tasks
+## Core Tasks
 
 * **Text Classification:** Categorizing text into predefined labels (e.g., spam detection, sentiment analysis of product reviews).
 * **Named Entity Recognition (NER):** Extracting key entities from text, such as names, dates, organizations, or medical terms.
