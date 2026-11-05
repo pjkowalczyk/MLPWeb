@@ -296,7 +296,7 @@ window.Quarto = {
 <li><strong>Feature Scaling</strong>: Standardizing features with StandardScaler remains important so that regularization applies uniformly across all features and solver algorithms (like lbfgs) converge efficiently.</li>
 </ul>
 </blockquote>
-<div id="05af8d1f" class="cell" data-execution_count="1">
+<div id="9b2a4f0f" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>
@@ -370,7 +370,7 @@ Confusion Matrix:
 <li><strong>Convergence (max_iter &amp; tol)</strong>: The standard Perceptron only guarantees convergence if the dataset is linearly separable. Scaling helps, but setting max_iter ensures training terminates even if classes overlap slightly.</li>
 </ul>
 </blockquote>
-<div id="47975fe3" class="cell" data-execution_count="2">
+<div id="bc677808" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Perceptron</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>

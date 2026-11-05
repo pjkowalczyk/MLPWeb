@@ -2,7 +2,7 @@
 title: "Natural Language Processing"
 ---
 
-### Natural Language Processing
+## Natural Language Processing
 
 **NLP** is a subfield of artificial intelligence (AI), computer science, and linguistics focused on enabling computers to understand, interpret, and generate human language in a way that is meaningful and contextual.
 
@@ -10,7 +10,7 @@ Think of it as the bridge between human communication (which is nuanced, ambiguo
 
 ---
 
-### Key Pillars & Core Tasks
+## Key Pillars & Core Tasks
 
 * **Text Classification:** Categorizing text into predefined labels (e.g., spam detection, sentiment analysis of product reviews).
 * **Named Entity Recognition (NER):** Extracting key entities from text, such as names, dates, organizations, or medical terms.
@@ -20,7 +20,7 @@ Think of it as the bridge between human communication (which is nuanced, ambiguo
 
 ---
 
-### The Evolution: From Linguistics to Transformers
+## The Evolution: From Linguistics to Transformers
 
 1. **Traditional NLP (Rule-Based & Statistical):** Early systems relied on heavy human intervention, grammar rules, regular expressions, and statistical models like **TF-IDF** and **Naive Bayes**.
 2. **Deep Learning Era:** The introduction of Recurrent Neural Networks (RNNs) and LSTMs allowed models to process sequences of words and capture short-term context.
@@ -28,7 +28,7 @@ Think of it as the bridge between human communication (which is nuanced, ambiguo
 
 ---
 
-### The NLP Workflow
+## The NLP Workflow
 
 Workflows for NLP tasks typically follows these stages:
 
@@ -39,3 +39,100 @@ Workflows for NLP tasks typically follows these stages:
 | **3. Vectorization / Embeddings** | Converting words or documents into numerical vectors that computers can process. | Word2Vec, GloVe, Contextual Embeddings (Hugging Face) |
 | **4. Modeling & Fine-Tuning** | Training a model or fine-tuning a pre-trained Large Language Model (LLM) for your specific task. | PyTorch, TensorFlow, Hugging Face `transformers`, Scikit-learn |
 | **5. Evaluation & Deployment** | Measuring performance using metrics like Accuracy, F1-Score, BLEU, or ROUGE, and deploying via APIs. | MLflow, FastAPI, Docker |
+
+---
+
+## Example Tasks
+
+### Text Classification
+
+#### The Text Classification Workflow
+
+A text classification pipeline involves five sequential steps:
+
+1. **Data Collection & Preparation:** Gathering the text dataset and ensuring the target labels are clean and well-defined.
+2. **Train-Test Splitting:** Partitioning the data to prevent data leakage and evaluate the model objectively on unseen data.
+3. **Text Feature Extraction (Vectorization):** Machine learning algorithms require numerical inputs, not raw strings. One must convert text into numerical vectors using techniques like **TF-IDF** (Term Frequency-Inverse Document Frequency) or **Bag-of-Words**.
+4. **Model Training:** Fitting a classification algorithm (such as Logistic Regression, Naive Bayes, or Support Vector Machines) to the training features.
+5. **Evaluation:** Assessing performance using robust metrics like **Accuracy**, **Precision**, **Recall**, **F1-Score**, and a **Confusion Matrix**.
+
+---
+
+##### End-to-End Pipeline
+
+```{python}
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+
+# 1. Sample Dataset (Texts and corresponding binary labels: 1 = Positive, 0 = Negative)
+texts = [
+    "I absolutely love this product! It exceeded all my expectations.",
+    "Worst purchase I have ever made. Complete waste of money.",
+    "Pretty decent quality for the price, though shipping was a bit slow.",
+    "Terrible customer service and the item arrived broken.",
+    "Fantastic experience! Will definitely buy again.",
+    "Not worth it at all. Stopped working after two days.",
+    "Impressed by the build quality and sleek design.",
+    "Awful. Do not buy this garbage.",
+]
+labels = [1, 0, 1, 0, 1, 0, 1, 0]
+
+# 2. Split into Training and Test Sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size = 0.2, random_state = 42, stratify = labels
+)
+
+# 3. Build a scikit-learn Pipeline combining Vectorization and Modeling
+# Pipeline ensures text is transformed consistently during both training and inference
+model_pipeline = Pipeline(
+    [
+        (
+            "tfidf",
+            TfidfVectorizer(stop_words = "english", ngram_range = (1, 2)),
+        ),  # Converts text to TF-IDF features
+        ("classifier", LogisticRegression(random_state = 42)),  # Classification model
+    ]
+)
+
+# 4. Train the Model
+model_pipeline.fit(X_train, y_train)
+
+# 5. Make Predictions on the Test Set
+y_pred = model_pipeline.predict(X_test)
+
+# 6. Evaluate Performance
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.4f}\n")
+
+print("Classification Report:")
+print(
+    classification_report(
+        y_test, y_pred, target_names=["Negative", "Positive"], zero_division = 0
+    )
+)
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# Example: Predicting a new, unseen text
+new_reviews = [
+    "Amazing quality, I am thoroughly impressed!",
+    "Horrible experience, never coming back.",
+]
+predictions = model_pipeline.predict(new_reviews)
+for review, pred in zip(new_reviews, predictions):
+    sentiment = "Positive" if pred == 1 else "Negative"
+    print(f"Review: '{review}' --> Predicted: {sentiment}")
+
+```
+
+---
+
+#### Best Practices
+
+* **Leverage Pipelines:** Always wrap the text vectorizer and model inside a `sklearn.pipeline.Pipeline`. This prevents data leakage (where test statistics accidentally influence training vectorization) and simplifies deployment.
+* **Handle Imbalanced Data:** If one class heavily dominates your dataset (e.g., 98% non-fraudulent transactions), rely on **F1-Score**, **Precision**, and **Recall** rather than raw accuracy.
+* **Experiment with N-grams:** Including unigrams (single words) alongside bigrams (`ngram_range = (1, 2)`) helps capture short contextual phrases like "not good" instead of just treating words independently.
