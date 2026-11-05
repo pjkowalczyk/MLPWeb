@@ -136,3 +136,67 @@ for review, pred in zip(new_reviews, predictions):
 * **Leverage Pipelines:** Always wrap the text vectorizer and model inside a `sklearn.pipeline.Pipeline`. This prevents data leakage (where test statistics accidentally influence training vectorization) and simplifies deployment.
 * **Handle Imbalanced Data:** If one class heavily dominates your dataset (e.g., 98% non-fraudulent transactions), rely on **F1-Score**, **Precision**, and **Recall** rather than raw accuracy.
 * **Experiment with N-grams:** Including unigrams (single words) alongside bigrams (`ngram_range = (1, 2)`) helps capture short contextual phrases like "not good" instead of just treating words independently.
+
+---
+
+### Named entity Recognition
+
+**Named Entity Recognition** is a subtask of Information Extraction that seeks to locate and classify named entities mentioned in text into predefined categories, such as **Persons**, **Organizations**, **Locations**, **Dates**, **Monetary Values**, and more.
+
+---
+
+#### The Named Entity Recognition Workflow
+
+Building and applying an NER pipeline involves four primary stages:
+
+1. **Text Preprocessing & Tokenization:** Cleaning the raw text and splitting it into individual words or tokens while preserving sentence boundaries.
+2. **Feature Engineering / Representation:** Transforming tokens into numerical or vector representations (such as word embeddings or part-of-speech tags) for traditional machine learning, or feeding raw sequences directly into deep learning architectures.
+3. **Model Training & Sequence Labeling:** Using sequence labeling algorithms — such as **Conditional Random Fields (CRFs)**, **BiLSTM-CRFs**, or state-of-the-art **Transformer models (like BERT/RoBERTa via Hugging Face)** — to predict entity tags (often encoded using schemes like IOB: *Inside, Outside, Beginning*).
+4. **Post-Processing & Evaluation:** Extracting the recognized entity spans, mapping them to their canonical types, and evaluating performance using entity-level **Precision**, **Recall**, and **F1-Score**.
+
+---
+
+##### NER with spaCy
+
+In modern data science, one rarely trains an NER model from scratch unless one has specialized domain corpora (like medical records or legal contracts). Instead, one uses robust pre-trained libraries like **spaCy** or **Hugging Face Transformers**.
+
+A clean, reproducible script using `spaCy` to perform off-the-shelf Named Entity Recognition:
+
+```{python}
+import spacy
+
+# 1. Load the pre-trained English language model
+# Make sure to download the model first via: python -m spacy download en_core_web_sm
+nlp = spacy.load("en_core_web_sm")
+
+# 2. Sample Unstructured Text Document
+text = (
+    "Apple Inc. CEO Tim Cook announced a new flagship store opening in "
+    "San Francisco on October 5th, 2026, priced at roughly $10 million."
+)
+
+# 3. Process the text through the spaCy pipeline
+doc = nlp(text)
+
+# 4. Extract and Inspect the Recognized Named Entities
+print("Extracted Named Entities:\n" + "-" * 40)
+for ent in doc.ents:
+    print(f"Entity: {ent.text:<20} | Type: {ent.label_}")
+
+# 5. Visualizing or exporting token-level IOB tags
+print("\nToken-Level Details (Text, POS, Tag, IOB Entity Scheme):\n" + "-" * 50)
+for token in doc:
+    print(
+        f"{token.text:<12} | {token.pos_:<6} | {token.tag_:<6} | {token.ent_iob_}-{token.ent_type_}"
+    )
+
+```
+
+---
+
+#### Best Practices
+
+* **Understand IOB Tagging Schemes:** Most sequence labelers use `B-` (Beginning), `I-` (Inside), and `O` (Outside). For instance, "San Francisco" would be tagged as `B-LOC` followed by `I-LOC`. Ensuring correct scheme handling is vital when building custom models.
+* **Leverage Transfer Learning:** For domain-specific tasks (e.g., extracting legal clauses or biomedical genes), fine-tuning a pre-trained transformer model using frameworks like Hugging Face `transformers` yields vastly superior results compared to rule-based or traditional machine learning approaches.
+* **Entity Disambiguation & Linking:** Recognizing an entity is just step one. Real-world systems often require **Entity Linking** to tie a mention (like "Apple") to a unique knowledge base ID (such as Wikidata Q312) to resolve ambiguity.
+

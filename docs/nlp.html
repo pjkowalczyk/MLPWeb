@@ -182,6 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#example-tasks" id="toc-example-tasks" class="nav-link" data-scroll-target="#example-tasks">Example Tasks</a>
   <ul class="collapse">
   <li><a href="#text-classification" id="toc-text-classification" class="nav-link" data-scroll-target="#text-classification">Text Classification</a></li>
+  <li><a href="#named-entity-recognition" id="toc-named-entity-recognition" class="nav-link" data-scroll-target="#named-entity-recognition">Named entity Recognition</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -297,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 <section id="end-to-end-pipeline" class="level5">
 <h5 class="anchored" data-anchor-id="end-to-end-pipeline">End-to-End Pipeline</h5>
-<div id="3d806243" class="cell" data-execution_count="1">
+<div id="e42af249" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>
@@ -392,6 +393,104 @@ Review: 'Horrible experience, never coming back.' --&gt; Predicted: Negative</co
 <li><strong>Leverage Pipelines:</strong> Always wrap the text vectorizer and model inside a <code>sklearn.pipeline.Pipeline</code>. This prevents data leakage (where test statistics accidentally influence training vectorization) and simplifies deployment.</li>
 <li><strong>Handle Imbalanced Data:</strong> If one class heavily dominates your dataset (e.g., 98% non-fraudulent transactions), rely on <strong>F1-Score</strong>, <strong>Precision</strong>, and <strong>Recall</strong> rather than raw accuracy.</li>
 <li><strong>Experiment with N-grams:</strong> Including unigrams (single words) alongside bigrams (<code>ngram_range = (1, 2)</code>) helps capture short contextual phrases like “not good” instead of just treating words independently.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="named-entity-recognition" class="level3">
+<h3 class="anchored" data-anchor-id="named-entity-recognition">Named entity Recognition</h3>
+<p><strong>Named Entity Recognition</strong> is a subtask of Information Extraction that seeks to locate and classify named entities mentioned in text into predefined categories, such as <strong>Persons</strong>, <strong>Organizations</strong>, <strong>Locations</strong>, <strong>Dates</strong>, <strong>Monetary Values</strong>, and more.</p>
+<hr>
+<section id="the-named-entity-recognition-workflow" class="level4">
+<h4 class="anchored" data-anchor-id="the-named-entity-recognition-workflow">The Named Entity Recognition Workflow</h4>
+<p>Building and applying an NER pipeline involves four primary stages:</p>
+<ol type="1">
+<li><strong>Text Preprocessing &amp; Tokenization:</strong> Cleaning the raw text and splitting it into individual words or tokens while preserving sentence boundaries.</li>
+<li><strong>Feature Engineering / Representation:</strong> Transforming tokens into numerical or vector representations (such as word embeddings or part-of-speech tags) for traditional machine learning, or feeding raw sequences directly into deep learning architectures.</li>
+<li><strong>Model Training &amp; Sequence Labeling:</strong> Using sequence labeling algorithms — such as <strong>Conditional Random Fields (CRFs)</strong>, <strong>BiLSTM-CRFs</strong>, or state-of-the-art <strong>Transformer models (like BERT/RoBERTa via Hugging Face)</strong> — to predict entity tags (often encoded using schemes like IOB: <em>Inside, Outside, Beginning</em>).</li>
+<li><strong>Post-Processing &amp; Evaluation:</strong> Extracting the recognized entity spans, mapping them to their canonical types, and evaluating performance using entity-level <strong>Precision</strong>, <strong>Recall</strong>, and <strong>F1-Score</strong>.</li>
+</ol>
+<hr>
+<section id="ner-with-spacy" class="level5">
+<h5 class="anchored" data-anchor-id="ner-with-spacy">NER with spaCy</h5>
+<p>In modern data science, one rarely trains an NER model from scratch unless one has specialized domain corpora (like medical records or legal contracts). Instead, one uses robust pre-trained libraries like <strong>spaCy</strong> or <strong>Hugging Face Transformers</strong>.</p>
+<p>A clean, reproducible script using <code>spaCy</code> to perform off-the-shelf Named Entity Recognition:</p>
+<div id="58392e7a" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load the pre-trained English language model</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure to download the model first via: python -m spacy download en_core_web_sm</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">"en_core_web_sm"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Sample Unstructured Text Document</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> (</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Apple Inc. CEO Tim Cook announced a new flagship store opening in "</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"San Francisco on October 5th, 2026, priced at roughly $10 million."</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Process the text through the spaCy pipeline</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> nlp(text)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Extract and Inspect the Recognized Named Entities</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Extracted Named Entities:</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="st">"-"</span> <span class="op">*</span> <span class="dv">40</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ent <span class="kw">in</span> doc.ents:</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Entity: </span><span class="sc">{</span>ent<span class="sc">.</span>text<span class="sc">:&lt;20}</span><span class="ss"> | Type: </span><span class="sc">{</span>ent<span class="sc">.</span>label_<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Visualizing or exporting token-level IOB tags</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Token-Level Details (Text, POS, Tag, IOB Entity Scheme):</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="st">"-"</span> <span class="op">*</span> <span class="dv">50</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> doc:</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>token<span class="sc">.</span>text<span class="sc">:&lt;12}</span><span class="ss"> | </span><span class="sc">{</span>token<span class="sc">.</span>pos_<span class="sc">:&lt;6}</span><span class="ss"> | </span><span class="sc">{</span>token<span class="sc">.</span>tag_<span class="sc">:&lt;6}</span><span class="ss"> | </span><span class="sc">{</span>token<span class="sc">.</span>ent_iob_<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>token<span class="sc">.</span>ent_type_<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Extracted Named Entities:
+----------------------------------------
+Entity: Apple Inc.           | Type: ORG
+Entity: Tim Cook             | Type: PERSON
+Entity: San Francisco        | Type: GPE
+Entity: October 5th, 2026    | Type: DATE
+Entity: roughly $10 million  | Type: MONEY
+
+Token-Level Details (Text, POS, Tag, IOB Entity Scheme):
+--------------------------------------------------
+Apple        | PROPN  | NNP    | B-ORG
+Inc.         | PROPN  | NNP    | I-ORG
+CEO          | PROPN  | NNP    | O-
+Tim          | PROPN  | NNP    | B-PERSON
+Cook         | PROPN  | NNP    | I-PERSON
+announced    | VERB   | VBD    | O-
+a            | DET    | DT     | O-
+new          | ADJ    | JJ     | O-
+flagship     | NOUN   | NN     | O-
+store        | NOUN   | NN     | O-
+opening      | NOUN   | NN     | O-
+in           | ADP    | IN     | O-
+San          | PROPN  | NNP    | B-GPE
+Francisco    | PROPN  | NNP    | I-GPE
+on           | ADP    | IN     | O-
+October      | PROPN  | NNP    | B-DATE
+5th          | NOUN   | NN     | I-DATE
+,            | PUNCT  | ,      | I-DATE
+2026         | NUM    | CD     | I-DATE
+,            | PUNCT  | ,      | O-
+priced       | VERB   | VBN    | O-
+at           | ADP    | IN     | O-
+roughly      | ADV    | RB     | B-MONEY
+$            | SYM    | $      | I-MONEY
+10           | NUM    | CD     | I-MONEY
+million      | NUM    | CD     | I-MONEY
+.            | PUNCT  | .      | O-</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="best-practices-1" class="level4">
+<h4 class="anchored" data-anchor-id="best-practices-1">Best Practices</h4>
+<ul>
+<li><strong>Understand IOB Tagging Schemes:</strong> Most sequence labelers use <code>B-</code> (Beginning), <code>I-</code> (Inside), and <code>O</code> (Outside). For instance, “San Francisco” would be tagged as <code>B-LOC</code> followed by <code>I-LOC</code>. Ensuring correct scheme handling is vital when building custom models.</li>
+<li><strong>Leverage Transfer Learning:</strong> For domain-specific tasks (e.g., extracting legal clauses or biomedical genes), fine-tuning a pre-trained transformer model using frameworks like Hugging Face <code>transformers</code> yields vastly superior results compared to rule-based or traditional machine learning approaches.</li>
+<li><strong>Entity Disambiguation &amp; Linking:</strong> Recognizing an entity is just step one. Real-world systems often require <strong>Entity Linking</strong> to tie a mention (like “Apple”) to a unique knowledge base ID (such as Wikidata Q312) to resolve ambiguity.</li>
 </ul>
 
 
