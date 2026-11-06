@@ -164,3 +164,147 @@ df["sentiment"] = df["review"].apply(classify_sentiment)
 print("\nEnriched DataFrame:")
 print(df[["review_id", "sentiment", "review"]])
 ```
+
+## Retrieval-Augmented Generation (Ollama Local RAG)
+
+Build a **Retrieval-Augmented Generation (RAG)** system locally using **Ollama** for querying proprietary or unstructured text corpora without sending private data to external cloud APIs.
+
+#### Prerequisites
+
+- Install the requires Python packages
+
+`pip install ollama chromadb`
+
+- Make sure the Ollama background service is running
+
+- Download a text embedding model and a generation model
+
+`ollama pull nomic-embed-text`
+`ollama pull llama3`
+
+#### Local RAG (Retrieval-Augmented Generation) Pipeline using Ollama and ChromaDB.
+
+This script
+
+* ingests custom text documents  
+
+* generates vector embeddings locally via Ollama (**nomic-embed-text**)  
+
+* stores them in an in-memory/local ChromaDB vector database  
+
+* retrieves the most relevant context for a user query  
+
+* generates a grounded response using a local LLM (**llama3**)  
+
+```{python}
+import chromadb
+import ollama
+
+# ---------------------------------------------------------------------------
+# Configuration & Constants
+# ---------------------------------------------------------------------------
+EMBEDDING_MODEL = "nomic-embed-text"
+GENERATION_MODEL = "llama3"
+COLLECTION_NAME = "local_rag_docs"
+
+
+def initialize_vector_database():
+  """Initializes ChromaDB client and creates a collection."""
+  client = chromadb.Client()
+  # Create or get the collection
+  collection = client.get_or_create_collection(name=COLLECTION_NAME)
+  return collection
+
+
+def ingest_documents(collection):
+  """Ingests sample documents into the vector store by generating local embeddings.
+
+  In a production workflow, you would load these chunks from PDFs, Markdown
+  files, or a pandas DataFrame.
+  """
+  documents = [
+      (
+          "doc_1",
+          "Ollama is an open-source tool that lets users run large language"
+          " models locally on their personal hardware, supporting macOS,"
+          " Windows, and Linux.",
+      ),
+      (
+          "doc_2",
+          "ChromaDB is a lightweight vector database designed to store and query"
+          " high-dimensional embeddings efficiently for semantic search and RAG"
+          " applications.",
+      ),
+      (
+          "doc_3",
+          "Retrieval-Augmented Generation (RAG) enhances LLM responses by"
+          " searching a private knowledge base first and injecting the most"
+          " relevant text chunks into the prompt context.",
+      ),
+  ]
+
+  print("[INFO] Generating embeddings and ingesting documents...")
+  for doc_id, text in documents:
+    # 1. Generate local embedding using Ollama
+    response = ollama.embeddings(model=EMBEDDING_MODEL, prompt=text)
+    embedding = response["embedding"]
+
+    # 2. Add document, embedding, and metadata to ChromaDB
+    collection.add(
+        ids=[doc_id], embeddings=[embedding], documents=[text]
+    )
+  print(f"[INFO] Successfully ingested {len(documents)} documents.")
+
+
+def query_rag_system(collection, user_query):
+  """Retrieves relevant context based on semantic similarity and prompts the local LLM."""
+  print(f"\n[QUERY] User Question: '{user_query}'")
+
+  # 1. Generate embedding for the user query
+  query_response = ollama.embeddings(model=EMBEDDING_MODEL, prompt=user_query)
+  query_embedding = query_response["embedding"]
+
+  # 2. Query ChromaDB for the top K most similar text chunks
+  results = collection.query(query_embeddings=[query_embedding], n_results=2)
+  retrieved_docs = results["documents"][0]
+
+  # 3. Construct context block from retrieved chunks
+  context = "\n\n".join(retrieved_docs)
+  print(f"[INFO] Retrieved Context Chunks:\n{context}\n")
+
+  # 4. Construct prompt combining context and user query
+  system_prompt = (
+      "You are a helpful assistant. Answer the user's question accurately"
+      " using ONLY the provided context below. If you do not know the answer"
+      " based on the context, state that you cannot find it."
+  )
+
+  user_prompt = f"Context:\n{context}\n\nQuestion: {user_query}"
+
+  # 5. Call local LLM via Ollama chat endpoint
+  print("[INFO] Generating response from local model...")
+  response = ollama.chat(
+      model=GENERATION_MODEL,
+      messages=[
+          {"role": "system", "content": system_prompt},
+          {"role": "user", "content": user_prompt},
+      ],
+  )
+
+  return response["message"]["content"]
+
+
+if __name__ == "__main__":
+  # Step 1: Set up vector database
+  vector_collection = initialize_vector_database()
+
+  # Step 2: Ingest knowledge base documents
+  ingest_documents(vector_collection)
+
+  # Step 3: Run a sample query against our local RAG pipeline
+  question = "How does RAG improve large language model responses?"
+  answer = query_rag_system(vector_collection, question)
+
+  print("=== Final LLM Answer ===")
+  print(answer)
+```

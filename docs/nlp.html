@@ -302,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 <section id="end-to-end-pipeline" class="level5">
 <h5 class="anchored" data-anchor-id="end-to-end-pipeline">End-to-End Pipeline</h5>
-<div id="9b02cc39" class="cell" data-execution_count="1">
+<div id="7bd2acfd" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, classification_report, confusion_matrix</span>
@@ -419,7 +419,7 @@ Review: 'Horrible experience, never coming back.' --&gt; Predicted: Negative</co
 <h5 class="anchored" data-anchor-id="ner-with-spacy">NER with spaCy</h5>
 <p>In modern data science, one rarely trains an NER model from scratch unless one has specialized domain corpora (like medical records or legal contracts). Instead, one uses robust pre-trained libraries like <strong>spaCy</strong> or <strong>Hugging Face Transformers</strong>.</p>
 <p>A clean, reproducible script using <code>spaCy</code> to perform off-the-shelf Named Entity Recognition:</p>
-<div id="450cc978" class="cell" data-execution_count="2">
+<div id="38767395" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load the pre-trained English language model</span></span>
