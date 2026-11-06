@@ -255,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-2-writing-first-python-script" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-writing-first-python-script">Step 2: Writing First Python Script</h4>
 <p>Create a Python script named <code>test_ollama.py</code> or open a Jupyter notebook cell. Use the following code to send a single prompt to your local <code>llama3</code> instance:</p>
-<div id="6708a363" class="cell" data-execution_count="1">
+<div id="18f828f1" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Send a chat request to the locally running model</span></span>
@@ -277,14 +277,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response[<span class="st">"message"</span>][<span class="st">"content"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model Response:
-Overfitting occurs when a machine learning model is too complex and accurately fits the training data too well, resulting in poor performance on unseen data because it has memorized the noise and random variations in the training data rather than learning the underlying patterns. This is often characterized by a high training accuracy and a low validation accuracy, indicating that the model is too specialized to the training data and fails to generalize well to new, unseen data.</code></pre>
+Overfitting is a phenomenon in machine learning where a model becomes too complex and starts to memorize the training data's noise and randomness, rather than generalizing to the underlying patterns, resulting in poor performance on unseen data. This occurs when a model is too flexible and can fit the training data perfectly, but is unable to generalize well to new, unseen data, causing it to perform poorly on test or validation sets.</code></pre>
 </div>
 </div>
 </section>
 <section id="step-3-experimenting-with-system-prompts" class="level4">
 <h4 class="anchored" data-anchor-id="step-3-experimenting-with-system-prompts">Step 3: Experimenting with System Prompts</h4>
 <p>Guide the model’s persona or output style by prepending a <code>"system"</code> message before the <code>"user"</code> message:</p>
-<div id="c3cf334f" class="cell" data-execution_count="2">
+<div id="e9976a87" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.chat(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"llama3"</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
@@ -301,19 +301,7 @@ Overfitting occurs when a machine learning model is too complex and accurately f
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response[<span class="st">"message"</span>][<span class="st">"content"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validation is a resampling technique used to evaluate the performance of a machine learning model by dividing the available data into training and testing sets, and then repeatedly training and testing the model on different subsets of the data. This process helps to:
-
-1. Reduce overfitting by averaging performance across multiple iterations.
-2. Estimate the model's generalizability to unseen data.
-3. Select the best hyperparameters and model configurations.
-
-Common cross-validation methods include:
-
-1. K-fold cross-validation: Divides the data into K equal subsets, trains the model on K-1 subsets, and tests it on the remaining subset. This process is repeated K times, with each subset serving as the test set once.
-2. Leave-one-out cross-validation: Trains the model on all data points except one, and then tests it on that single point.
-3. Bootstrapping: Creates multiple random subsets of the data, trains the model on each subset, and tests it on the remaining data points.
-
-Cross-validation is a crucial component of model evaluation and selection, as it provides a more accurate estimate of a model's performance on unseen data.</code></pre>
+<pre><code>Cross-validation is a statistical technique used to evaluate the performance of a machine learning model by splitting the available data into training and testing subsets, repeatedly. This process ensures that the model's performance is not biased by a specific subset of data.</code></pre>
 </div>
 </div>
 <hr>
@@ -324,7 +312,7 @@ Cross-validation is a crucial component of model evaluation and selection, as it
 <section id="step-1-import-dependencies-and-setup-data" class="level4">
 <h4 class="anchored" data-anchor-id="step-1-import-dependencies-and-setup-data">Step 1: Import Dependencies and Setup Data</h4>
 <p>Assume one is working with a small dataset of customer support reviews that one wants to categorize by sentiment.</p>
-<div id="091de0d3" class="cell" data-execution_count="3">
+<div id="02437eab" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -362,7 +350,7 @@ Cross-validation is a crucial component of model evaluation and selection, as it
 <section id="step-2-define-a-classification-function" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-define-a-classification-function">Step 2: Define a Classification Function</h4>
 <p>Write a Python function that formats each text row into a prompt, queries Ollama, and strips whitespace from the output:</p>
-<div id="38501a00" class="cell" data-execution_count="4">
+<div id="ac813836" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_sentiment(text):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  prompt <span class="op">=</span> <span class="ss">f"""</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    Classify the sentiment of the following review strictly as Positive, Negative, or Neutral.</span></span>
@@ -379,7 +367,7 @@ Cross-validation is a crucial component of model evaluation and selection, as it
 <section id="step-3-apply-the-function-to-the-dataframe" class="level4">
 <h4 class="anchored" data-anchor-id="step-3-apply-the-function-to-the-dataframe">Step 3: Apply the Function to the DataFrame</h4>
 <p>Apply the custom function across the <code>review</code> column to enrich the dataset:</p>
-<div id="8a6ff953" class="cell" data-execution_count="5">
+<div id="d376339f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the classification function (Note: execution time depends on local hardware)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"sentiment"</span>] <span class="op">=</span> df[<span class="st">"review"</span>].<span class="bu">apply</span>(classify_sentiment)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -388,10 +376,10 @@ Cross-validation is a crucial component of model evaluation and selection, as it
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Enriched DataFrame:
-   review_id                                          sentiment  \
-0        101  I would classify the sentiment of this review ...   
-1        102                                Sentiment: Positive   
-2        103                                 Sentiment: Neutral   
+   review_id            sentiment  \
+0        101             Negative   
+1        102             Positive   
+2        103  Sentiment: Negative   
 
                                               review  
 0  The software kept crashing every time I clicke...  
@@ -415,7 +403,8 @@ Enriched DataFrame:
 <li><p>Make sure the Ollama background service is running</p></li>
 <li><p>Download a text embedding model and a generation model</p></li>
 </ul>
-<p><code>ollama pull nomic-embed-text</code> <code>ollama pull llama3</code></p>
+<p><code>ollama pull nomic-embed-text</code></p>
+<p><code>ollama pull llama3</code></p>
 </section>
 <section id="local-rag-retrieval-augmented-generation-pipeline-using-ollama-and-chromadb." class="level4">
 <h4 class="anchored" data-anchor-id="local-rag-retrieval-augmented-generation-pipeline-using-ollama-and-chromadb.">Local RAG (Retrieval-Augmented Generation) Pipeline using Ollama and ChromaDB.</h4>
@@ -427,7 +416,7 @@ Enriched DataFrame:
 <li><p>retrieves the most relevant context for a user query</p></li>
 <li><p>generates a grounded response using a local LLM (<strong>llama3</strong>)</p></li>
 </ul>
-<div id="213eb6c0" class="cell" data-execution_count="6">
+<div id="b769fe6e" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chromadb</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>

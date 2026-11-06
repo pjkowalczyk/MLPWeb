@@ -179,7 +179,8 @@ Build a **Retrieval-Augmented Generation (RAG)** system locally using **Ollama**
 
 - Download a text embedding model and a generation model
 
-`ollama pull nomic-embed-text`
+`ollama pull nomic-embed-text`  
+
 `ollama pull llama3`
 
 #### Local RAG (Retrieval-Augmented Generation) Pipeline using Ollama and ChromaDB.
