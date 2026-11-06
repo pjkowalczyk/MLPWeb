@@ -18,6 +18,8 @@ website:
         text: NLP
       - href: deeplearning.qmd
         text: Deep Learning
+      - href: llm.qmd
+        text: Large Language Models
       - about.qmd
 
 
