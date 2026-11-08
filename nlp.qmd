@@ -200,3 +200,150 @@ for token in doc:
 * **Leverage Transfer Learning:** For domain-specific tasks (e.g., extracting legal clauses or biomedical genes), fine-tuning a pre-trained transformer model using frameworks like Hugging Face `transformers` yields vastly superior results compared to rule-based or traditional machine learning approaches.
 * **Entity Disambiguation & Linking:** Recognizing an entity is just step one. Real-world systems often require **Entity Linking** to tie a mention (like "Apple") to a unique knowledge base ID (such as Wikidata Q312) to resolve ambiguity.
 
+---
+
+### Text Summarization
+
+Text summarization is the process of distilling a long piece of text into a shorter version while preserving its most critical information, meaning, and core context. 
+
+The **Hugging Face** library (`transformers`) serves as the industry standard for implementing state-of-the-art summarization pipelines with just a few lines of code.
+
+---
+
+#### The Two Main Paradigms of Summarization
+
+Before writing code, it is essential to understand the two primary ways models summarize text:
+
+1. **Extractive Summarization:**
+  * **How it works:** Extracts the most important sentences or phrases directly from the original text and concatenates them to form a summary.
+  * **Analogy:** Using a yellow highlighter to mark key sentences in a textbook chapter.
+
+
+2. **Abstractive Summarization:**
+  * **How it works:** Generates new sentences by "reading" the text, understanding its semantic meaning, and rephrasing it in its own words (similar to how humans summarize).
+  * **Analogy:** Reading an article and writing a fresh, concise paragraph in your own voice. *Hugging Face pipelines predominantly excel here using transformer architectures.*
+
+---
+
+#### Key Parameters to Tune
+
+When working with summarization pipelines, adjust these generation parameters:
+
+* **`max_length` / `min_length`**: Controls how long or short the output summary can be.
+* **`num_beams`**: Controls beam search. Higher values (e.g., 4 or 5) explore more potential word combinations for a better summary, at the cost of slower inference speed.
+* **`do_sample`**: If set to `True`, the model uses probabilistic sampling (controlled by `temperature` or `top_k`/`top_p`), which can introduce creativity or variation into the summaries.
+
+---
+
+##### Example
+
+```{python}
+import os
+import pymupdf
+from transformers import pipeline
+import textwrap
+import requests
+```
+
+```{python}
+def extract_text_from_pdf(pdf_path: str) -> str:
+    """
+    Opens a PDF file and extracts all text content page by page.
+    """
+    if not os.path.exists(pdf_path):
+        raise FileNotFoundError(f"The file {pdf_path} was not found.")
+    
+    text = ""
+    with pymupdf.open(pdf_path) as doc:
+        for page in doc:
+            page_text = page.get_text()
+            if page_text:
+                text += page_text + "\n"
+                
+    return text.strip()
+
+def summarize_text(text: str, max_sentences: int = 10) -> str:
+    """
+    Uses the modern Hugging Face 'text-generation' pipeline with an instruction-tuned model
+    to generate a concise summary constrained to a maximum number of sentences.
+    """
+    if not text:
+        return "No text could be extracted from the PDF."
+
+    print("Loading local text-generation pipeline...")
+    # Use a standard open-source instruction model supported by text-generation
+    summarizer = pipeline("text-generation", model="Qwen/Qwen2.5-1.5B-Instruct")
+    
+    # Construct a clear prompt enforcing the sentence limit constraint
+    prompt = f"""
+    Please provide a concise summary of the following text. 
+    Your summary must be strictly no more than {max_sentences} sentences long.
+
+    Text:
+    {text[:4000]}  # Truncate to fit model context window if necessary
+    """
+    
+    print("Generating summary...")
+    # Format as a chat message for instruction-tuned models
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant that summarizes documents accurately."},
+        {"role": "user", "content": prompt}
+    ]
+    
+    output = summarizer(messages, max_new_tokens=300, do_sample=False)
+    
+    # Extract the generated response text from the chat output structure
+    summary_text = output[0]['generated_text'][-1]['content']
+    
+    # Post-processing: Ensure sentence count is strictly <= max_sentences
+    sentences = [s.strip() for s in summary_text.split('.') if s.strip()]
+    if len(sentences) > max_sentences:
+        sentences = sentences[:max_sentences]
+        summary_text = '. '.join(sentences) + '.'
+        
+    return summary_text
+```
+
+```{python}
+# --- Execution Example ---
+if __name__ == "__main__":
+    # 1. The direct raw URL for the PDF in your GitHub repository
+    pdf_url = "https://raw.githubusercontent.com/pjkowalczyk/MLPWeb/main/literature/CoffeeReviews.pdf"
+
+    # 2. Define the local filename you want to save it as
+    local_filename = "CoffeeReviews.pdf"
+    pdf_file_path = "CoffeeReviews.pdf"
+
+    print(f"Downloading PDF from: {pdf_url}")
+
+    # 3. Stream the download using requests
+    response = requests.get(pdf_url, stream=True)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        # 4. Write the content chunks to a local file
+        with open(local_filename, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+            
+        print(f"Success! File saved locally as '{local_filename}'")
+    else:
+        print(f"Failed to download file. Status code: {response.status_code}")
+        print("Please verify that the repository is public and the file path is correct.")
+    
+    try:
+        print(f"Reading text from: {pdf_file_path}")
+        raw_text = extract_text_from_pdf(pdf_file_path)
+        print(f"Extracted {len(raw_text)} characters of text.")
+        
+        # Generate summary
+        summary = summarize_text(raw_text, max_sentences=10)
+        
+        print("\n--- PDF Summary (Max 10 Sentences) ---")
+        # print(summary)
+        wrapped_text = textwrap.fill(summary, width=80)
+        print(wrapped_text)
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+```
