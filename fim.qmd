@@ -1,0 +1,209 @@
+---
+title: "Frequent Itemset Mining"
+---
+
+## Frequent Itemset Mining
+
+Frequent Itemset Mining (FIM) is a foundational data mining technique used to discover items that frequently co-occur in large transactional datasets. The most classic application is **Market Basket Analysis** — finding out which products customers tend to buy together (e.g., *bread and butter*, or *diapers and beer*).
+
+Beyond retail, FIM powers:
+
+* **Recommendation Engines:** "Customers who bought X also bought Y."
+* **Bioinformatics:** Identifying co-occurring gene mutations.
+* **Web Usage Mining:** Discovering pages frequently visited together in a single session.
+* **Healthcare:** Finding combinations of symptoms or medications associated with specific outcomes.
+
+---
+
+## Core Concepts & Metrics
+
+To evaluate whether an itemset (a collection of one or more items) is "frequent" or interesting, data scientists rely on three primary metrics: **Support**, **Confidence**, and **Lift**.
+
+Suppose one has a dataset of $N$ total transactions, and is evaluating two itemsets: $X$ (the antecedent) and $Y$ (the consequent).
+
+### 1. Support
+**Support** measures how frequently an itemset appears in the entire dataset. It helps filter out rare, statistically insignificant combinations.
+
+$$\text{Support}(X) = \frac{\text{Transactions containing } X}{N}$$
+
+$$\text{Support}(X \cup Y) = \frac{\text{Transactions containing both } X \text{ and } Y}{N}$$
+
+### 2. Confidence
+**Confidence** measures the reliability of an association rule ($X \rightarrow Y$). It represents the conditional probability that a transaction contains $Y$, given that it already contains $X$.
+
+$$\text{Confidence}(X \rightarrow Y) = \frac{\text{Support}(X \cup Y)}{\text{Support}(X)}$$
+
+### 3. Lift
+**Lift** evaluates how much more likely $Y$ is to be bought when $X$ is bought, compared to $Y$'s baseline popularity. Because high-frequency items (like milk or bananas) naturally appear in many baskets, Confidence alone can be misleading. Lift corrects for this.
+
+$$\text{Lift}(X \rightarrow Y) = \frac{\text{Confidence}(X \rightarrow Y)}{\text{Support}(Y)} = \frac{\text{Support}(X \cup Y)}{\text{Support}(X) \times \text{Support}(Y)}$$
+
+| Lift Value | Interpretation |
+| :--- | :--- |
+| **$\text{Lift} > 1$** | **Positive correlation:** $X$ and $Y$ appear together *more* often than expected by chance. |
+| **$\text{Lift} = 1$** | **Independence:** $X$ and $Y$ have no relationship; co-occurrence is purely coincidental. |
+| **$\text{Lift} < 1$** | **Negative correlation:** $X$ and $Y$ are substitutes; buying one makes buying the other *less* likely. |
+
+: Interpreting Lift Values {#tbl-lift}
+
+---
+
+## How the Algorithms Work
+
+Scanning every possible combination of items in a store with 10,000 products requires checking $2^{10,000} - 1$ itemsets — a computational impossibility. Two primary algorithms solve this efficiently:
+
+### The Apriori Algorithm
+Apriori relies on the **Downward Closure Property** (the *Apriori Principle*): *If an itemset is frequent, all of its subsets must also be frequent.* Conversely, if `{Milk}` is infrequent, `{Milk, Cereal}` cannot possibly be frequent, allowing the algorithm to prune massive branches of the search tree early.
+
+* **Pros:** Easy to understand and implement.
+* **Cons:** Requires multiple scans of the database and generates a large number of candidate itemsets, making it slow on massive datasets.
+
+### FP-Growth (Frequent Pattern Growth)
+FP-Growth eliminates candidate generation entirely. It scans the dataset twice to compress transactions into a specialized tree structure called an **FP-Tree**, then recursively mines frequent patterns directly from the tree.
+
+* **Pros:** Significantly faster and more memory-efficient than Apriori on large datasets.
+* **Cons:** The FP-Tree can become complex if transactions share very few items.
+
+---
+
+## Tutorial
+
+`pandas` and `mlxtend` (Machine Learning Extensions) are used to mine frequent itemsets and generate association rules from a simulated grocery dataset.
+
+### Step 1: Environment Setup
+
+Install `mlxtend`, if it is not already installed:
+
+`pip install pandas mlxtend`
+
+### Step 2: Prepare and Encode the Data
+
+Frequent itemset algorithms in `mlxtend` expect data in a **one-hot encoded boolean DataFrame**, where rows represent transactions, columns represent unique items, and values are `True` or `False`.
+
+```{python}
+#| label: data-prep
+#| echo: true
+#| eval: true
+
+import pandas as pd
+import numpy as np
+from mlxtend.preprocessing import TransactionEncoder
+
+# Sample transactional dataset (list of baskets)
+transactions = [
+    ['Milk', 'Bread', 'Butter'],
+    ['Milk', 'Bread', 'Eggs', 'Butter'],
+    ['Bread', 'Butter', 'Jam'],
+    ['Milk', 'Eggs'],
+    ['Milk', 'Bread', 'Butter', 'Coffee'],
+    ['Coffee', 'Sugar', 'Milk'],
+    ['Bread', 'Jam'],
+    ['Milk', 'Bread', 'Eggs', 'Coffee'],
+    ['Butter', 'Jam', 'Bread'],
+    ['Milk', 'Bread', 'Butter']
+]
+
+# Transform transactions into a one-hot encoded boolean DataFrame
+te = TransactionEncoder()
+te_array = te.fit(transactions).transform(transactions)
+df = pd.DataFrame(te_array, columns = te.columns_)
+
+print(df.head())
+
+```
+
+### Step 3: Mine Frequent Itemsets with FP-Growth
+
+Use `fpgrowth` with a `min_support` threshold of `0.3` (meaning an itemset must appear in at least 30% of all transactions to be kept).
+
+```{python}
+#| label: fpgrowth-mining
+#| echo: true
+#| eval: true
+
+from mlxtend.frequent_patterns import fpgrowth
+
+# Extract frequent itemsets
+frequent_itemsets = fpgrowth(df, min_support = 0.3, use_colnames = True)
+
+# Add a length column for easier filtering and sort by support
+frequent_itemsets['length'] = frequent_itemsets['itemsets'].apply(len)
+frequent_itemsets = frequent_itemsets.sort_values(by = 'support', ascending = False)
+
+print(frequent_itemsets)
+
+```
+
+::: {.callout-tip}
+
+## Choosing `min_support`
+
+Setting `min_support` too high will only return obvious single items (like `{Bread}` or `{Milk}`). Setting it too low will flood memory with noisy, coincidental pairs. Start around `0.05` to `0.10` for real-world datasets and adjust based on catalog size.
+:::
+
+### Step 4: Generate Association Rules
+
+Once frequent itemsets have been identified, they are passed to `association_rules()` to calculate Confidence, Lift, and other metrics. Here, filter for rules with a **Confidence of at least 70%** (`min_threshold = 0.7`).
+
+```{python}
+#| label: association-rules
+#| echo: true
+#| eval: true
+
+from mlxtend.frequent_patterns import association_rules
+
+# Generate rules based on confidence
+rules = association_rules(
+    frequent_itemsets, 
+    metric="confidence", 
+    min_threshold=0.7
+)
+
+# Select and sort the most relevant columns
+cols = ['antecedents', 'consequents', 'support', 'confidence', 'lift']
+rules_filtered = rules[cols].sort_values(by = 'lift', ascending = False)
+
+print(rules_filtered.to_string(index = False))
+
+```
+
+### Step 5: Interpreting the Output
+
+When reading the final `rules_filtered` table, look for the intersection of actionable business metrics:
+
+1. **High Lift ($> 1.2$):** Ensures the items genuinely drive each other's sales rather than both just being popular items.
+2. **Solid Confidence ($> 0.6$):** Ensures the rule is reliable enough to act upon (e.g., triggering a targeted coupon or checkout recommendation).
+3. **Sufficient Support:** Guarantees the pattern occurs frequently enough to have a meaningful financial or operational impact.
+
+---
+
+## Common Pitfalls to Avoid
+
+* **The Popular Item Trap:** If 80% of customers buy shopping bags, every item will have an 80% confidence rule pointing to `{Shopping Bag}`. Always verify rules using **Lift** rather than relying solely on Confidence.
+* **Data Granularity Issues:** Mining at the exact SKU level (e.g., *Brand X 12oz Whole Milk* vs. *Brand Y 12oz Whole Milk*) often yields support values too low to detect patterns. Aggregate items into meaningful categories (e.g., *Dairy - Whole Milk*) before running FP-Growth.
+* **Correlation $\neq$ Causation:** A rule `{Cereal} -> {Milk}` does not necessarily mean promoting cereal will increase milk sales; customers may already be coming to the store intending to buy both.
+
+## A Note About **frozenset**s
+
+In frequent itemset mining (FIM), algorithms like Apriori and FP-Growth handle thousands or millions of item combinations. The Python `frozenset` data type plays a crucial role in managing these combinations efficiently.
+
+---
+
+1. **Unique Dictionary Keys for Support Counting**
+* To track how often itemsets appear in a transactional dataset, algorithms use hash maps (dictionaries) where the itemset is the key and its support count is the value.
+* Because standard Python `set` objects are mutable, they are unhashable and **cannot be used as dictionary keys**.
+* A `frozenset` is immutable and hashable, making it a valid and stable key for tracking frequencies (e.g., `{frozenset({'Milk', 'Bread'}): 150}`).
+
+
+2. **Order-Independent Item Matching**
+* In retail datasets, the sequence in which items appear in a basket does not matter—buying bread followed by milk is identical to buying milk followed by bread.
+* `frozenset` inherently disregards order (`frozenset({'Bread', 'Milk'})` is strictly equal to `frozenset({'Milk', 'Bread'})`), ensuring that identical itemsets bought in different sequences are grouped into the same bucket.
+
+
+3. **Implementing the Apriori Property (Subset Pruning)**
+* The core of the Apriori algorithm relies on the **Downward Closure Property**: *If an itemset is frequent, all of its subsets must also be frequent.*
+* Frozensets allow algorithms to quickly and mathematically verify subset relationships using built-in set operations (e.g., checking `sub_set.issubset(parent_frozenset)`).
+
+
+4. **Library Integration (e.g., `mlxtend`)**
+* Python libraries designed for association rule mining (such as `mlxtend`) return mined itemsets wrapped inside frozensets by default. This protects the resulting patterns from accidental in-place modifications while you filter, sort, or generate association rules.

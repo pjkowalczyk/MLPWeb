@@ -20,6 +20,8 @@ website:
         text: Deep Learning
       - href: llm.qmd
         text: Large Language Models
+      - href: fim.qmd
+        text: Frequent Itemset Mining
       - about.qmd
 
 

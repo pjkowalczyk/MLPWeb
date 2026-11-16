@@ -1,0 +1,42 @@
+---
+title: "Telco EDA"
+author: "Data Science Team"
+date: last-modified
+format:
+  html:
+    code-fold: false
+    theme: cosmo
+    toc: true
+execute:
+  echo: true
+  warning: false
+---
+
+```{python}
+import pandas as pd
+```
+
+# download dataset
+```{python}
+df = pd.read_csv('data/Telco-Customer-Churn.csv')
+```
+
+```{python}
+df.sample(10)
+```
+
+```{python}
+df.info()
+```
+
+```{python}
+obj_cols = df.select_dtypes(include=['object'])
+
+summary_df = pd.DataFrame({
+    'Data Type': obj_cols.dtypes,
+    'Unique Values': obj_cols.nunique(),
+    'Missing Values': obj_cols.isna().sum()
+})
+
+print(summary_df)
+```

@@ -29,5 +29,24 @@
   },
   "TextSummarization.qmd": {
     "TextSummarization.html": "daad4c01"
+  },
+  "dashIntro.qmd": {
+    "dashIntro.html": "d3376a92"
+  },
+  "telco_eda.qmd": {
+    "telco_eda.html": "5858eeb4",
+    "telco_eda.tex": "48d52ab6"
+  },
+  "TelcoEDA.qmd": {
+    "TelcoEDA.html": "1249c845"
+  },
+  "NN-SonarClassification.qmd": {
+    "NN-SonarClassification.html": "f75eb671"
+  },
+  "fim.qmd": {
+    "fim.html": "032c0829"
+  },
+  "Untitled.ipynb": {
+    "Untitled.html": "8ae36e21"
   }
 }

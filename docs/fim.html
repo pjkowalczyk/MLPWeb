@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Frequent Itemset Mining – Machine Learning Praxis</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d31a0c91b01e363be7b7a36e602e2c70.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Machine Learning Praxis</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./eda.html"> 
+<span class="menu-text">EDA</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./classification.html"> 
+<span class="menu-text">Classification</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./regression.html"> 
+<span class="menu-text">Regression</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./nlp.html"> 
+<span class="menu-text">NLP</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./deeplearning.html"> 
+<span class="menu-text">Deep Learning</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./llm.html"> 
+<span class="menu-text">Large Language Models</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./fim.html" aria-current="page"> 
+<span class="menu-text">Frequent Itemset Mining</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#frequent-itemset-mining" id="toc-frequent-itemset-mining" class="nav-link active" data-scroll-target="#frequent-itemset-mining">Frequent Itemset Mining</a></li>
+  <li><a href="#core-concepts-metrics" id="toc-core-concepts-metrics" class="nav-link" data-scroll-target="#core-concepts-metrics">Core Concepts &amp; Metrics</a>
+  <ul class="collapse">
+  <li><a href="#support" id="toc-support" class="nav-link" data-scroll-target="#support">1. Support</a></li>
+  <li><a href="#confidence" id="toc-confidence" class="nav-link" data-scroll-target="#confidence">2. Confidence</a></li>
+  <li><a href="#lift" id="toc-lift" class="nav-link" data-scroll-target="#lift">3. Lift</a></li>
+  </ul></li>
+  <li><a href="#how-the-algorithms-work" id="toc-how-the-algorithms-work" class="nav-link" data-scroll-target="#how-the-algorithms-work">How the Algorithms Work</a>
+  <ul class="collapse">
+  <li><a href="#the-apriori-algorithm" id="toc-the-apriori-algorithm" class="nav-link" data-scroll-target="#the-apriori-algorithm">The Apriori Algorithm</a></li>
+  <li><a href="#fp-growth-frequent-pattern-growth" id="toc-fp-growth-frequent-pattern-growth" class="nav-link" data-scroll-target="#fp-growth-frequent-pattern-growth">FP-Growth (Frequent Pattern Growth)</a></li>
+  </ul></li>
+  <li><a href="#tutorial" id="toc-tutorial" class="nav-link" data-scroll-target="#tutorial">Tutorial</a>
+  <ul class="collapse">
+  <li><a href="#step-1-environment-setup" id="toc-step-1-environment-setup" class="nav-link" data-scroll-target="#step-1-environment-setup">Step 1: Environment Setup</a></li>
+  <li><a href="#step-2-prepare-and-encode-the-data" id="toc-step-2-prepare-and-encode-the-data" class="nav-link" data-scroll-target="#step-2-prepare-and-encode-the-data">Step 2: Prepare and Encode the Data</a></li>
+  <li><a href="#step-3-mine-frequent-itemsets-with-fp-growth" id="toc-step-3-mine-frequent-itemsets-with-fp-growth" class="nav-link" data-scroll-target="#step-3-mine-frequent-itemsets-with-fp-growth">Step 3: Mine Frequent Itemsets with FP-Growth</a></li>
+  <li><a href="#step-4-generate-association-rules" id="toc-step-4-generate-association-rules" class="nav-link" data-scroll-target="#step-4-generate-association-rules">Step 4: Generate Association Rules</a></li>
+  <li><a href="#step-5-interpreting-the-output" id="toc-step-5-interpreting-the-output" class="nav-link" data-scroll-target="#step-5-interpreting-the-output">Step 5: Interpreting the Output</a></li>
+  </ul></li>
+  <li><a href="#common-pitfalls-to-avoid" id="toc-common-pitfalls-to-avoid" class="nav-link" data-scroll-target="#common-pitfalls-to-avoid">Common Pitfalls to Avoid</a></li>
+  <li><a href="#a-note-about-frozensets" id="toc-a-note-about-frozensets" class="nav-link" data-scroll-target="#a-note-about-frozensets">A Note About <strong>frozenset</strong>s</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Frequent Itemset Mining</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="frequent-itemset-mining" class="level2">
+<h2 class="anchored" data-anchor-id="frequent-itemset-mining">Frequent Itemset Mining</h2>
+<p>Frequent Itemset Mining (FIM) is a foundational data mining technique used to discover items that frequently co-occur in large transactional datasets. The most classic application is <strong>Market Basket Analysis</strong> — finding out which products customers tend to buy together (e.g., <em>bread and butter</em>, or <em>diapers and beer</em>).</p>
+<p>Beyond retail, FIM powers:</p>
+<ul>
+<li><strong>Recommendation Engines:</strong> “Customers who bought X also bought Y.”</li>
+<li><strong>Bioinformatics:</strong> Identifying co-occurring gene mutations.</li>
+<li><strong>Web Usage Mining:</strong> Discovering pages frequently visited together in a single session.</li>
+<li><strong>Healthcare:</strong> Finding combinations of symptoms or medications associated with specific outcomes.</li>
+</ul>
+<hr>
+</section>
+<section id="core-concepts-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="core-concepts-metrics">Core Concepts &amp; Metrics</h2>
+<p>To evaluate whether an itemset (a collection of one or more items) is “frequent” or interesting, data scientists rely on three primary metrics: <strong>Support</strong>, <strong>Confidence</strong>, and <strong>Lift</strong>.</p>
+<p>Suppose one has a dataset of <span class="math inline">\(N\)</span> total transactions, and is evaluating two itemsets: <span class="math inline">\(X\)</span> (the antecedent) and <span class="math inline">\(Y\)</span> (the consequent).</p>
+<section id="support" class="level3">
+<h3 class="anchored" data-anchor-id="support">1. Support</h3>
+<p><strong>Support</strong> measures how frequently an itemset appears in the entire dataset. It helps filter out rare, statistically insignificant combinations.</p>
+<p><span class="math display">\[\text{Support}(X) = \frac{\text{Transactions containing } X}{N}\]</span></p>
+<p><span class="math display">\[\text{Support}(X \cup Y) = \frac{\text{Transactions containing both } X \text{ and } Y}{N}\]</span></p>
+</section>
+<section id="confidence" class="level3">
+<h3 class="anchored" data-anchor-id="confidence">2. Confidence</h3>
+<p><strong>Confidence</strong> measures the reliability of an association rule (<span class="math inline">\(X \rightarrow Y\)</span>). It represents the conditional probability that a transaction contains <span class="math inline">\(Y\)</span>, given that it already contains <span class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[\text{Confidence}(X \rightarrow Y) = \frac{\text{Support}(X \cup Y)}{\text{Support}(X)}\]</span></p>
+</section>
+<section id="lift" class="level3">
+<h3 class="anchored" data-anchor-id="lift">3. Lift</h3>
+<p><strong>Lift</strong> evaluates how much more likely <span class="math inline">\(Y\)</span> is to be bought when <span class="math inline">\(X\)</span> is bought, compared to <span class="math inline">\(Y\)</span>’s baseline popularity. Because high-frequency items (like milk or bananas) naturally appear in many baskets, Confidence alone can be misleading. Lift corrects for this.</p>
+<p><span class="math display">\[\text{Lift}(X \rightarrow Y) = \frac{\text{Confidence}(X \rightarrow Y)}{\text{Support}(Y)} = \frac{\text{Support}(X \cup Y)}{\text{Support}(X) \times \text{Support}(Y)}\]</span></p>
+<div id="tbl-lift" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-lift-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Interpreting Lift Values
+</figcaption>
+<div aria-describedby="tbl-lift-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lift Value</th>
+<th style="text-align: left;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong><span class="math inline">\(\text{Lift} &gt; 1\)</span></strong></td>
+<td style="text-align: left;"><strong>Positive correlation:</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> appear together <em>more</em> often than expected by chance.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><span class="math inline">\(\text{Lift} = 1\)</span></strong></td>
+<td style="text-align: left;"><strong>Independence:</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> have no relationship; co-occurrence is purely coincidental.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><span class="math inline">\(\text{Lift} &lt; 1\)</span></strong></td>
+<td style="text-align: left;"><strong>Negative correlation:</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are substitutes; buying one makes buying the other <em>less</em> likely.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+<section id="how-the-algorithms-work" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-algorithms-work">How the Algorithms Work</h2>
+<p>Scanning every possible combination of items in a store with 10,000 products requires checking <span class="math inline">\(2^{10,000} - 1\)</span> itemsets — a computational impossibility. Two primary algorithms solve this efficiently:</p>
+<section id="the-apriori-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="the-apriori-algorithm">The Apriori Algorithm</h3>
+<p>Apriori relies on the <strong>Downward Closure Property</strong> (the <em>Apriori Principle</em>): <em>If an itemset is frequent, all of its subsets must also be frequent.</em> Conversely, if <code>{Milk}</code> is infrequent, <code>{Milk, Cereal}</code> cannot possibly be frequent, allowing the algorithm to prune massive branches of the search tree early.</p>
+<ul>
+<li><strong>Pros:</strong> Easy to understand and implement.</li>
+<li><strong>Cons:</strong> Requires multiple scans of the database and generates a large number of candidate itemsets, making it slow on massive datasets.</li>
+</ul>
+</section>
+<section id="fp-growth-frequent-pattern-growth" class="level3">
+<h3 class="anchored" data-anchor-id="fp-growth-frequent-pattern-growth">FP-Growth (Frequent Pattern Growth)</h3>
+<p>FP-Growth eliminates candidate generation entirely. It scans the dataset twice to compress transactions into a specialized tree structure called an <strong>FP-Tree</strong>, then recursively mines frequent patterns directly from the tree.</p>
+<ul>
+<li><strong>Pros:</strong> Significantly faster and more memory-efficient than Apriori on large datasets.</li>
+<li><strong>Cons:</strong> The FP-Tree can become complex if transactions share very few items.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="tutorial" class="level2">
+<h2 class="anchored" data-anchor-id="tutorial">Tutorial</h2>
+<p><code>pandas</code> and <code>mlxtend</code> (Machine Learning Extensions) are used to mine frequent itemsets and generate association rules from a simulated grocery dataset.</p>
+<section id="step-1-environment-setup" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-environment-setup">Step 1: Environment Setup</h3>
+<p>Install <code>mlxtend</code>, if it is not already installed:</p>
+<p><code>pip install pandas mlxtend</code></p>
+</section>
+<section id="step-2-prepare-and-encode-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-prepare-and-encode-the-data">Step 2: Prepare and Encode the Data</h3>
+<p>Frequent itemset algorithms in <code>mlxtend</code> expect data in a <strong>one-hot encoded boolean DataFrame</strong>, where rows represent transactions, columns represent unique items, and values are <code>True</code> or <code>False</code>.</p>
+<div id="data-prep" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mlxtend.preprocessing <span class="im">import</span> TransactionEncoder</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample transactional dataset (list of baskets)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>transactions <span class="op">=</span> [</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Milk'</span>, <span class="st">'Bread'</span>, <span class="st">'Butter'</span>],</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Milk'</span>, <span class="st">'Bread'</span>, <span class="st">'Eggs'</span>, <span class="st">'Butter'</span>],</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Bread'</span>, <span class="st">'Butter'</span>, <span class="st">'Jam'</span>],</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Milk'</span>, <span class="st">'Eggs'</span>],</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Milk'</span>, <span class="st">'Bread'</span>, <span class="st">'Butter'</span>, <span class="st">'Coffee'</span>],</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Coffee'</span>, <span class="st">'Sugar'</span>, <span class="st">'Milk'</span>],</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Bread'</span>, <span class="st">'Jam'</span>],</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Milk'</span>, <span class="st">'Bread'</span>, <span class="st">'Eggs'</span>, <span class="st">'Coffee'</span>],</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Butter'</span>, <span class="st">'Jam'</span>, <span class="st">'Bread'</span>],</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'Milk'</span>, <span class="st">'Bread'</span>, <span class="st">'Butter'</span>]</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Transform transactions into a one-hot encoded boolean DataFrame</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>te <span class="op">=</span> TransactionEncoder()</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>te_array <span class="op">=</span> te.fit(transactions).transform(transactions)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(te_array, columns <span class="op">=</span> te.columns_)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Bread  Butter  Coffee   Eggs    Jam   Milk  Sugar
+0   True    True   False  False  False   True  False
+1   True    True   False   True  False   True  False
+2   True    True   False  False   True  False  False
+3  False   False   False   True  False   True  False
+4   True    True    True  False  False   True  False</code></pre>
+</div>
+</div>
+</section>
+<section id="step-3-mine-frequent-itemsets-with-fp-growth" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-mine-frequent-itemsets-with-fp-growth">Step 3: Mine Frequent Itemsets with FP-Growth</h3>
+<p>Use <code>fpgrowth</code> with a <code>min_support</code> threshold of <code>0.3</code> (meaning an itemset must appear in at least 30% of all transactions to be kept).</p>
+<div id="fpgrowth-mining" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mlxtend.frequent_patterns <span class="im">import</span> fpgrowth</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract frequent itemsets</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>frequent_itemsets <span class="op">=</span> fpgrowth(df, min_support <span class="op">=</span> <span class="fl">0.3</span>, use_colnames <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a length column for easier filtering and sort by support</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>frequent_itemsets[<span class="st">'length'</span>] <span class="op">=</span> frequent_itemsets[<span class="st">'itemsets'</span>].<span class="bu">apply</span>(<span class="bu">len</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>frequent_itemsets <span class="op">=</span> frequent_itemsets.sort_values(by <span class="op">=</span> <span class="st">'support'</span>, ascending <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(frequent_itemsets)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    support                          itemsets  length
+0       0.8                frozenset({Bread})       1
+1       0.7                 frozenset({Milk})       1
+2       0.6               frozenset({Butter})       1
+7       0.6        frozenset({Bread, Butter})       2
+6       0.5          frozenset({Bread, Milk})       2
+8       0.4         frozenset({Milk, Butter})       2
+9       0.4  frozenset({Bread, Butter, Milk})       3
+3       0.3                 frozenset({Eggs})       1
+4       0.3                  frozenset({Jam})       1
+5       0.3               frozenset({Coffee})       1
+10      0.3           frozenset({Milk, Eggs})       2
+11      0.3           frozenset({Bread, Jam})       2
+12      0.3         frozenset({Milk, Coffee})       2</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Choosing <code>min_support</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Setting <code>min_support</code> too high will only return obvious single items (like <code>{Bread}</code> or <code>{Milk}</code>). Setting it too low will flood memory with noisy, coincidental pairs. Start around <code>0.05</code> to <code>0.10</code> for real-world datasets and adjust based on catalog size.</p>
+</div>
+</div>
+</section>
+<section id="step-4-generate-association-rules" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-generate-association-rules">Step 4: Generate Association Rules</h3>
+<p>Once frequent itemsets have been identified, they are passed to <code>association_rules()</code> to calculate Confidence, Lift, and other metrics. Here, filter for rules with a <strong>Confidence of at least 70%</strong> (<code>min_threshold = 0.7</code>).</p>
+<div id="association-rules" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mlxtend.frequent_patterns <span class="im">import</span> association_rules</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate rules based on confidence</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>rules <span class="op">=</span> association_rules(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    frequent_itemsets, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    metric<span class="op">=</span><span class="st">"confidence"</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    min_threshold<span class="op">=</span><span class="fl">0.7</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Select and sort the most relevant columns</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'antecedents'</span>, <span class="st">'consequents'</span>, <span class="st">'support'</span>, <span class="st">'confidence'</span>, <span class="st">'lift'</span>]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>rules_filtered <span class="op">=</span> rules[cols].sort_values(by <span class="op">=</span> <span class="st">'lift'</span>, ascending <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rules_filtered.to_string(index <span class="op">=</span> <span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              antecedents         consequents  support  confidence     lift
+        frozenset({Eggs})   frozenset({Milk})      0.3    1.000000 1.428571
+      frozenset({Coffee})   frozenset({Milk})      0.3    1.000000 1.428571
+ frozenset({Bread, Milk}) frozenset({Butter})      0.4    0.800000 1.333333
+      frozenset({Butter})  frozenset({Bread})      0.6    1.000000 1.250000
+frozenset({Milk, Butter})  frozenset({Bread})      0.4    1.000000 1.250000
+         frozenset({Jam})  frozenset({Bread})      0.3    1.000000 1.250000
+       frozenset({Bread}) frozenset({Butter})      0.6    0.750000 1.250000
+        frozenset({Milk})  frozenset({Bread})      0.5    0.714286 0.892857</code></pre>
+</div>
+</div>
+</section>
+<section id="step-5-interpreting-the-output" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-interpreting-the-output">Step 5: Interpreting the Output</h3>
+<p>When reading the final <code>rules_filtered</code> table, look for the intersection of actionable business metrics:</p>
+<ol type="1">
+<li><strong>High Lift (<span class="math inline">\(&gt; 1.2\)</span>):</strong> Ensures the items genuinely drive each other’s sales rather than both just being popular items.</li>
+<li><strong>Solid Confidence (<span class="math inline">\(&gt; 0.6\)</span>):</strong> Ensures the rule is reliable enough to act upon (e.g., triggering a targeted coupon or checkout recommendation).</li>
+<li><strong>Sufficient Support:</strong> Guarantees the pattern occurs frequently enough to have a meaningful financial or operational impact.</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="common-pitfalls-to-avoid" class="level2">
+<h2 class="anchored" data-anchor-id="common-pitfalls-to-avoid">Common Pitfalls to Avoid</h2>
+<ul>
+<li><strong>The Popular Item Trap:</strong> If 80% of customers buy shopping bags, every item will have an 80% confidence rule pointing to <code>{Shopping Bag}</code>. Always verify rules using <strong>Lift</strong> rather than relying solely on Confidence.</li>
+<li><strong>Data Granularity Issues:</strong> Mining at the exact SKU level (e.g., <em>Brand X 12oz Whole Milk</em> vs.&nbsp;<em>Brand Y 12oz Whole Milk</em>) often yields support values too low to detect patterns. Aggregate items into meaningful categories (e.g., <em>Dairy - Whole Milk</em>) before running FP-Growth.</li>
+<li><strong>Correlation <span class="math inline">\(\neq\)</span> Causation:</strong> A rule <code>{Cereal} -&gt; {Milk}</code> does not necessarily mean promoting cereal will increase milk sales; customers may already be coming to the store intending to buy both.</li>
+</ul>
+</section>
+<section id="a-note-about-frozensets" class="level2">
+<h2 class="anchored" data-anchor-id="a-note-about-frozensets">A Note About <strong>frozenset</strong>s</h2>
+<p>In frequent itemset mining (FIM), algorithms like Apriori and FP-Growth handle thousands or millions of item combinations. The Python <code>frozenset</code> data type plays a crucial role in managing these combinations efficiently.</p>
+<hr>
+<ol type="1">
+<li><strong>Unique Dictionary Keys for Support Counting</strong></li>
+</ol>
+<ul>
+<li>To track how often itemsets appear in a transactional dataset, algorithms use hash maps (dictionaries) where the itemset is the key and its support count is the value.</li>
+<li>Because standard Python <code>set</code> objects are mutable, they are unhashable and <strong>cannot be used as dictionary keys</strong>.</li>
+<li>A <code>frozenset</code> is immutable and hashable, making it a valid and stable key for tracking frequencies (e.g., <code>{frozenset({'Milk', 'Bread'}): 150}</code>).</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Order-Independent Item Matching</strong></li>
+</ol>
+<ul>
+<li>In retail datasets, the sequence in which items appear in a basket does not matter—buying bread followed by milk is identical to buying milk followed by bread.</li>
+<li><code>frozenset</code> inherently disregards order (<code>frozenset({'Bread', 'Milk'})</code> is strictly equal to <code>frozenset({'Milk', 'Bread'})</code>), ensuring that identical itemsets bought in different sequences are grouped into the same bucket.</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Implementing the Apriori Property (Subset Pruning)</strong></li>
+</ol>
+<ul>
+<li>The core of the Apriori algorithm relies on the <strong>Downward Closure Property</strong>: <em>If an itemset is frequent, all of its subsets must also be frequent.</em></li>
+<li>Frozensets allow algorithms to quickly and mathematically verify subset relationships using built-in set operations (e.g., checking <code>sub_set.issubset(parent_frozenset)</code>).</li>
+</ul>
+<ol start="4" type="1">
+<li><strong>Library Integration (e.g., <code>mlxtend</code>)</strong></li>
+</ol>
+<ul>
+<li>Python libraries designed for association rule mining (such as <code>mlxtend</code>) return mined itemsets wrapped inside frozensets by default. This protects the resulting patterns from accidental in-place modifications while you filter, sort, or generate association rules.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

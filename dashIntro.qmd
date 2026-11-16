@@ -1,0 +1,147 @@
+---
+
+title: "Interactive Web Apps with Dash & Plotly"
+subtitle: "A Data Scientist's Guide to Production Dashboards"
+author: "Data Science Mentorship Program"
+date: "2026-11-10"
+format:
+    revealjs:
+        theme: cosmo
+        slide-number: true
+        transition: slide
+code-fold: false
+jupyter: python3
+
+---
+
+# Introduction
+
+## Why Dash for Data Scientists?
+
+* **Beyond Notebooks**: Move from static Jupyter Notebooks to interactive web applications that stakeholders can actually use.
+* **Pure Python**: Build reactive web frontends and backends without writing a single line of HTML, CSS, or JavaScript.
+* **Enterprise Grade**: Backed by Plotly, designed for complex analytical dashboards and data pipelines.
+
+---
+
+## Prerequisites & Setup
+
+Install the required packages in your active Python environment:
+
+```bash
+pip install dash pandas plotly
+
+```
+
+To run your Dash application:
+
+```bash
+python app.py
+
+```
+
+*(Navigating to `[http://127.0.0.1:8050/](http://127.0.0.1:8050/)` in your browser)*
+
+---
+
+# Core Architecture
+
+## The Two Pillars of Dash
+
+1. **The Layout (`dash_html_components` & `dash_core_components`)**
+* Defines the visual structure, layout containers, and UI widgets (dropdowns, sliders, graphs).
+
+
+2. **The Interactivity Engine (`@app.callback`)**
+* Defines how the app reacts when a user interacts with a widget (updating charts dynamically).
+
+
+
+---
+
+# Step 1: Loading Data & App Initialization
+
+```{python}
+#| eval: false
+from dash import Dash, html, dcc, callback, Output, Input
+import pandas as pd
+import plotly.express as px
+
+# Load sample dataset (Iris dataset)
+df = px.data.iris()
+available_species = df['species'].unique()
+
+# Initialize the Dash application
+app = Dash(__name__)
+app.title = "Dash & Plotly Data Science Tutorial"
+
+```
+
+---
+
+# Step 2: Defining the Layout
+
+```{python}
+#| eval: false
+app.layout = html.Div(style={'padding': '30px'}, children=[
+    html.H1("🌱 Interactive Iris Explorer"),
+    html.P("Use the controls below to filter data dynamically."),
+    
+    # Widget Control Panel
+    html.Div(style={'display': 'flex', 'gap': '20px'}, children=[
+        dcc.Dropdown(
+            id='species-dropdown',
+            options=[{'label': s.capitalize(), 'value': s} for s in available_species],
+            value=list(available_species),
+            multi=True
+        ),
+        dcc.Select(
+            id='x-axis-select',
+            options=[{'label': 'Sepal Length', 'value': 'sepal_length'},
+                     {'label': 'Petal Length', 'value': 'petal_length'}],
+            value='sepal_length'
+        )
+    ]),
+    
+    # Graph Container
+    dcc.Graph(id='interactive-scatter-plot')
+])
+
+```
+
+---
+
+# Step 3: The Reactive Callback Engine
+
+```{python}
+#| eval: false
+@callback(
+    Output('interactive-scatter-plot', 'figure'),
+    [
+        Input('species-dropdown', 'value'),
+        Input('x-axis-select', 'value')
+    ]
+)
+def update_graph(selected_species, x_col):
+    # Filter DataFrame based on user selection
+    filtered_df = df[df['species'].isin(selected_species or [])]
+    
+    # Generate Plotly Express figure
+    fig = px.scatter(
+        filtered_df, x=x_col, y='sepal_width', 
+        color='species', template="plotly_white"
+    )
+    return fig
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8050)
+
+```
+
+---
+
+# Summary & Best Practices
+
+1. **Explicit Callbacks**: Dash uses a reactive dependency graph, making it highly efficient for larger enterprise apps.
+2. **Native Plotly Integration**: Seamlessly drop `plotly.express` charts into `dcc.Graph` components with built-in zoom, pan, and hover support.
+3. **Modular Design**: Easily extend layouts using `dash-bootstrap-components` for polished corporate dashboards.
