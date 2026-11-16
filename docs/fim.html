@@ -416,13 +416,13 @@ Table&nbsp;1: Interpreting Lift Values
 2       0.6               frozenset({Butter})       1
 7       0.6        frozenset({Bread, Butter})       2
 6       0.5          frozenset({Bread, Milk})       2
-8       0.4         frozenset({Milk, Butter})       2
-9       0.4  frozenset({Bread, Butter, Milk})       3
+8       0.4         frozenset({Butter, Milk})       2
+9       0.4  frozenset({Milk, Bread, Butter})       3
 3       0.3                 frozenset({Eggs})       1
 4       0.3                  frozenset({Jam})       1
 5       0.3               frozenset({Coffee})       1
-10      0.3           frozenset({Milk, Eggs})       2
-11      0.3           frozenset({Bread, Jam})       2
+10      0.3           frozenset({Eggs, Milk})       2
+11      0.3           frozenset({Jam, Bread})       2
 12      0.3         frozenset({Milk, Coffee})       2</code></pre>
 </div>
 </div>
@@ -464,7 +464,7 @@ Table&nbsp;1: Interpreting Lift Values
       frozenset({Coffee})   frozenset({Milk})      0.3    1.000000 1.428571
  frozenset({Bread, Milk}) frozenset({Butter})      0.4    0.800000 1.333333
       frozenset({Butter})  frozenset({Bread})      0.6    1.000000 1.250000
-frozenset({Milk, Butter})  frozenset({Bread})      0.4    1.000000 1.250000
+frozenset({Butter, Milk})  frozenset({Bread})      0.4    1.000000 1.250000
          frozenset({Jam})  frozenset({Bread})      0.3    1.000000 1.250000
        frozenset({Bread}) frozenset({Butter})      0.6    0.750000 1.250000
         frozenset({Milk})  frozenset({Bread})      0.5    0.714286 0.892857</code></pre>

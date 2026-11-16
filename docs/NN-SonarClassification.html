@@ -161,6 +161,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Large Language Models</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./fim.html"> 
+<span class="menu-text">Frequent Itemset Mining</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
@@ -234,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-and-preprocess-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-and-preprocess-the-data">2. Load and Preprocess the Data</h2>
 <p>We will load the dataset, normalize the feature values to help the neural network converge faster, and split the data into training and testing sets.</p>
-<div id="c55f28ad" class="cell" data-execution_count="1">
+<div id="8ce55ed2" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer <span class="co"># Using a standard proxy or standard loading for demonstration</span></span>
@@ -275,7 +279,7 @@ Testing features shape: (42, 60)</code></pre>
 <section id="build-the-neural-network-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="build-the-neural-network-architecture">3. Build the Neural Network Architecture</h2>
 <p>We’ll define a simple PyTorch <code>nn.Module</code> with two hidden layers, using ReLU activations and a Sigmoid output for binary classification.</p>
-<div id="b619cc48" class="cell" data-execution_count="2">
+<div id="216a2307" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
@@ -326,7 +330,7 @@ Testing features shape: (42, 60)</code></pre>
 <section id="train-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="train-the-model">4. Train the Model</h2>
 <p>We will use Binary Cross Entropy Loss (<code>BCELoss</code>) combined with the Adam optimizer.</p>
-<div id="a8d20f4d" class="cell" data-execution_count="3">
+<div id="1ded401b" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function and optimizer</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.BCELoss()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">0.01</span>)</span>
@@ -348,8 +352,8 @@ Testing features shape: (42, 60)</code></pre>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (epoch <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Epoch [</span><span class="sc">{</span>epoch<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>epochs<span class="sc">}</span><span class="ss">], Loss: </span><span class="sc">{</span>epoch_loss<span class="op">/</span><span class="bu">len</span>(train_loader)<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch [10/50], Loss: 0.0051
-Epoch [20/50], Loss: 0.0006
+<pre><code>Epoch [10/50], Loss: 0.0124
+Epoch [20/50], Loss: 0.0004
 Epoch [30/50], Loss: 0.0002
 Epoch [40/50], Loss: 0.0001
 Epoch [50/50], Loss: 0.0001</code></pre>
@@ -360,7 +364,7 @@ Epoch [50/50], Loss: 0.0001</code></pre>
 <section id="evaluate-performance" class="level2">
 <h2 class="anchored" data-anchor-id="evaluate-performance">5. Evaluate Performance</h2>
 <p>Let’s measure how well our trained network generalizes on the unseen test dataset.</p>
-<div id="3ef58a50" class="cell" data-execution_count="4">
+<div id="da754907" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    test_preds <span class="op">=</span> model(X_test_t)</span>
